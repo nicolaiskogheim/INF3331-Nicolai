@@ -114,17 +114,15 @@ if __name__ == "__main__":
     files = int(sys.argv[3])
 
     # And-or trick to use argv only if argv is long enough.
-    size = l<5 and 1000 or int(sys.argv[4])
-    rec_depth = l<6 and 2 or int(sys.argv[5])
-    start = l<7 and 1388534400 or int(sys.argv[6])
-    end = l<8 and 1406851200 or int(sys.argv[7])
-    seed = [l<9 and [0] or [int(sys.argv[8])]][0]
-    verbose = [l<10 and [0] or int(sys.argv[9])][0]
+    size = 1000 if l<5 else int(sys.argv[4])
+    rec_depth = 2 if l<6 else int(sys.argv[5])
+    start = 1388534400 if l<7 else int(sys.argv[6])
+    end = 1406851200 if l<8 else int(sys.argv[7])
+    seed = [[0] if l<9 else [int(sys.argv[8])]][0]
+    verbose = [[0] if l<10 else int(sys.argv[9])][0]
 
     # Fix the random seed (if not None):
     random.seed(seed or None)
 
     generate_tree(target, dirs, rec_depth, verbose)
     populate_tree(target, files, size, start, end, verbose)
-
-
