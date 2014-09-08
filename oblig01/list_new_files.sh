@@ -5,7 +5,7 @@ E_BADARGS=85
 
 usage(){
   echo -e "Usage: bash ./`basename $0` folder days"
-  }
+}
 
 if [ $# -ne 2 ]
 then
