@@ -118,7 +118,7 @@ if __name__ == "__main__":
     rec_depth = 2 if l<6 else int(sys.argv[5])
     start = 1388534400 if l<7 else int(sys.argv[6])
     end = 1406851200 if l<8 else int(sys.argv[7])
-    seed = [[0] if l<9 else [int(sys.argv[8])]][0]
+    seed = 0 if l<9 else [int(sys.argv[8])][0]
     verbose = [[0] if l<10 else int(sys.argv[9])][0]
 
     # Fix the random seed (if not None):
