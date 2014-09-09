@@ -16,4 +16,4 @@ fi
 folder=$1
 days=$2
 
-find $folder -type f -mtime -${days}d | du -h | sort -h | egrep -v "\.(\/$1)?$"
+find $folder -type f -mtime -${days}d | xargs du -h | sort -h
