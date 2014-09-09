@@ -119,7 +119,7 @@ if __name__ == "__main__":
     start = 1388534400 if l<7 else int(sys.argv[6])
     end = 1406851200 if l<8 else int(sys.argv[7])
     seed = "0" if l<9 else sys.argv[8]
-    verbose = "0" l<10 else sys.argv[9]
+    verbose = "0" if l<10 else sys.argv[9]
 
     # Fix the random seed (if not None):
     random.seed(int(seed) or None)
