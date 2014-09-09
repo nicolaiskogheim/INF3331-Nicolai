@@ -16,7 +16,7 @@ Create a random string of text.
 Parameters
 ----------
 length : int
-    Length of the string (minus the prefix part).
+    Length of the string (not including the prefix part).
 prefix : string
     Prefix the string with some text.
 legal_chars : string
