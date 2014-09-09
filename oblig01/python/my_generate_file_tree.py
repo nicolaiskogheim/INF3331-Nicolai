@@ -118,11 +118,11 @@ if __name__ == "__main__":
     rec_depth = 2 if l<6 else int(sys.argv[5])
     start = 1388534400 if l<7 else int(sys.argv[6])
     end = 1406851200 if l<8 else int(sys.argv[7])
-    seed = 0 if l<9 else [int(sys.argv[8])][0]
-    verbose = [[0] if l<10 else int(sys.argv[9])][0]
+    seed = "0" if l<9 else sys.argv[8]
+    verbose = "0" l<10 else sys.argv[9]
 
     # Fix the random seed (if not None):
-    random.seed(seed or None)
+    random.seed(int(seed) or None)
 
-    generate_tree(target, dirs, rec_depth, verbose)
-    populate_tree(target, files, size, start, end, verbose)
+    generate_tree(target, dirs, rec_depth, int(verbose))
+    populate_tree(target, files, size, start, end, int(verbose))
