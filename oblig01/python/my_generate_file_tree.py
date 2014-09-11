@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+verbose=0
+
 import random   # Random number generator
 import os       # Crossplatform OS rutines
 import sys      # interpreter tools
@@ -11,41 +13,38 @@ legal_chars = "abcdefghijklmnopqrstuvwxyz"+\
 
 def random_string(length=6, prefix="", legal_chars=legal_chars):
     """
-Create a random string of text.
+    Create a random string of text.
 
-Parameters
-----------
-length : int
-    Length of the string (not including the prefix part).
-prefix : string
-    Prefix the string with some text.
-legal_chars : string
-    A string of charracter that are allowed to be used in the
-    output.
+    Parameters
+    ----------
+    length : int
+        Length of the string (not including the prefix part).
+    prefix : string
+        Prefix the string with some text.
+    legal_chars : string
+        A string of charracter that are allowed to be used in the
+        output.
 
-Returns
--------
-rnd_str : str
-    A string of random charracters.
+    Returns
+    -------
+    rnd_str : str
+        A string of random charracters.
     """
     # Insert user code here
 
 
-
-def generate_tree(target, dirs=3, rec_depth=2, verbose=False):
+def generate_tree(target, dirs=3, rec_depth=2):
     """
-Genereate a random folder structure with random names.
+    Genereate a random folder structure with random names.
 
-Parameters
-----------
-target : str
-    Path to the root where folders are to be created.
-dirs : int
-    Maximum number of directories to be created per directory.
-rec_depth : int
-    Maximum directory depth.
-verbose : bool
-    Be loud about what to do.
+    Parameters
+    ----------
+    target : str
+        Path to the root where folders are to be created.
+    dirs : int
+        Maximum number of directories to be created per directory.
+    rec_depth : int
+        Maximum directory depth.
     """
     # Insert user code here
 
