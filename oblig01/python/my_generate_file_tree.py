@@ -101,26 +101,25 @@ def populate_tree(target, files=5, size=800, start_time=1388534400,
           Be loud about what to do.
     """
 
-    def walk_function(arg, dirname, fnames):
+    def create_files(root, dirs, files):
         """
-          Function used in os.path.walk
+          Function used in os.walk
 
           Following the logic of Python scoping, this is a local function,
           only visible inside of populate_tree.
-          This function should be passed to os.path.walk.
 
           Parameters
           ----------
-          arg : obj
-              Arbitrary argument specified at initialization.
-          dirname : str
-              Name of a directory in file tree (changes with each call.
-          fnames : list
-              List of filenames in file tree.
+          root : string
+              Current root
+          dirs : list
+              Names of the subdirectories in root (excluding '.' and '..')
+          files :
+              Names of the non-directory files in dirpath.
         """
-        # Fill in code for walk function
 
-    os.path.walk(target, walk_function, None)
+    for root, dirs, files in os.walk(target):
+        create_files(root, dirs, files)
 
 
 
