@@ -29,7 +29,7 @@ class TestGenerateTree:
     assert width+depth < 12, "Warning, running high width and depth values is extremely slow."
 
     generate_tree(root_folder, width, depth)
-    msg = "generate_tree: expected %d folders, but got %d."
+    msg = "generate_tree: expected {0} folders, but got {1}."
 
     expected_folder_count = calculate_tree_size(width, depth)
     actual_folder_count = subfolder_count(root_folder)
