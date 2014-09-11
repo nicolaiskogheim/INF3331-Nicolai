@@ -36,22 +36,22 @@ def make_subfolder(root, width, depth):
 
 def random_string(length=6, prefix="", legal_chars=legal_chars):
     """
-    Create a random string of text.
+      Create a random string of text.
 
-    Parameters
-    ----------
-    length : int
-        Length of the string (not including the prefix part).
-    prefix : string
-        Prefix the string with some text.
-    legal_chars : string
-        A string of charracter that are allowed to be used in the
-        output.
+      Parameters
+      ----------
+      length : int
+          Length of the string (not including the prefix part).
+      prefix : string
+          Prefix the string with some text.
+      legal_chars : string
+          A string of charracter that are allowed to be used in the
+          output.
 
-    Returns
-    -------
-    rnd_str : str
-        A string of random charracters.
+      Returns
+      -------
+      rnd_str : str
+          A string of random charracters.
     """
     # Insert user code here
     if not legal_chars or not length:
@@ -63,16 +63,16 @@ def random_string(length=6, prefix="", legal_chars=legal_chars):
 
 def generate_tree(target, dirs=3, rec_depth=2):
     """
-    Genereate a random folder structure with random names.
+      Genereate a random folder structure with random names.
 
-    Parameters
-    ----------
-    target : str
-        Path to the root where folders are to be created.
-    dirs : int
-        Maximum number of directories to be created per directory.
-    rec_depth : int
-        Maximum directory depth.
+      Parameters
+      ----------
+      target : str
+          Path to the root where folders are to be created.
+      dirs : int
+          Maximum number of directories to be created per directory.
+      rec_depth : int
+          Maximum directory depth.
     """
 
 
@@ -81,42 +81,42 @@ def generate_tree(target, dirs=3, rec_depth=2):
 def populate_tree(target, files=5, size=800, start_time=1388534400,
         end_time=1406851201000, verbose=False):
     """
-Generate random files with random content.
+      Generate random files with random content.
 
-Parameters
-----------
-target : str
-    Path to the file tree where the files are being created.
-files : int
-    Maximum number of directories to be created.
-size : int
-    Maximum size in kilobyte for each file.
-start_time : int
-    Lower bound for access time (atime) and modified time (mtime)
-    allowed in each file.
-    Denoted in Unix time format.
-end_time : int
-    Same as start_time, but for upper bound.
-verbose : bool
-    Be loud about what to do.
+      Parameters
+      ----------
+      target : str
+          Path to the file tree where the files are being created.
+      files : int
+          Maximum number of directories to be created.
+      size : int
+          Maximum size in kilobyte for each file.
+      start_time : int
+          Lower bound for access time (atime) and modified time (mtime)
+          allowed in each file.
+          Denoted in Unix time format.
+      end_time : int
+          Same as start_time, but for upper bound.
+      verbose : bool
+          Be loud about what to do.
     """
 
     def walk_function(arg, dirname, fnames):
         """
-Function used in os.path.walk
+          Function used in os.path.walk
 
-Following the logic of Python scoping, this is a local function,
-only visible inside of populate_tree.
-This function should be passed to os.path.walk.
+          Following the logic of Python scoping, this is a local function,
+          only visible inside of populate_tree.
+          This function should be passed to os.path.walk.
 
-Parameters
-----------
-arg : obj
-    Arbitrary argument specified at initialization.
-dirname : str
-    Name of a directory in file tree (changes with each call.
-fnames : list
-    List of filenames in file tree.
+          Parameters
+          ----------
+          arg : obj
+              Arbitrary argument specified at initialization.
+          dirname : str
+              Name of a directory in file tree (changes with each call.
+          fnames : list
+              List of filenames in file tree.
         """
         # Fill in code for walk function
 
