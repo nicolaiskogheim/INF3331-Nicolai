@@ -54,7 +54,12 @@ def random_string(length=6, prefix="", legal_chars=legal_chars):
         A string of random charracters.
     """
     # Insert user code here
+    if not legal_chars or not length:
+      raise ValueError
 
+    generated_string = "".join(random.choice(legal_chars) for _ in range(length))
+    random_string = prefix + generated_string
+    return random_string
 
 def generate_tree(target, dirs=3, rec_depth=2):
     """
