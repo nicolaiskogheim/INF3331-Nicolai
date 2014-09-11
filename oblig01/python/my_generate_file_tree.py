@@ -15,6 +15,25 @@ def debug(msg):
   if verbose:
     print msg
 
+def make_subfolder(root, width, depth):
+  if depth < 0:
+    return
+
+  try:
+    debug("Creating folder %s" % root)
+    debug("Entering folder %s" % root)
+    os.makedirs(root)
+  except OSError:
+    if not os.path.isdir(root):
+      raise
+
+  for _ in range(0, width):
+    new_folder = os.path.join(root, random_string())
+    make_subfolder(new_folder, width, depth-1)
+
+  debug("Exiting folder %s" % root)
+
+
 def random_string(length=6, prefix="", legal_chars=legal_chars):
     """
     Create a random string of text.
@@ -50,9 +69,9 @@ def generate_tree(target, dirs=3, rec_depth=2):
     rec_depth : int
         Maximum directory depth.
     """
-    # Insert user code here
 
 
+    make_subfolder(target, dirs, rec_depth)
 
 def populate_tree(target, files=5, size=800, start_time=1388534400,
         end_time=1406851201000, verbose=False):
