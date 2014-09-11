@@ -11,6 +11,10 @@ legal_chars = "abcdefghijklmnopqrstuvwxyz"+\
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"+"0123456789_"
 
 
+def debug(msg):
+  if verbose:
+    print msg
+
 def random_string(length=6, prefix="", legal_chars=legal_chars):
     """
     Create a random string of text.
