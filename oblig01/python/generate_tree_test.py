@@ -37,8 +37,6 @@ class TestGenerateTree:
       (1,1), (2,2), (3,3), (9,2), (3,7)
   ])
   def test_creates_folder_tree(self, root_folder, width, depth):
-    # Remove/edit this assertion to be able to run high values.
-    assert width+depth < 12, "Warning, running high width and depth values is extremely slow."
 
     config["target"] = root_folder;
     config["dirs"] = width;
