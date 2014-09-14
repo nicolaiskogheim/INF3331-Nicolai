@@ -87,8 +87,8 @@ def generate_tree(target, dirs=3, rec_depth=2):
 
     make_subfolder(target, dirs, rec_depth)
 
-def populate_tree(target, files=5, size=800, start_time=1388534400,
-        end_time=1406851201000, verbose=False):
+def populate_tree(target, max_files=5, max_size=800, start_time=946684800,
+        end_time=1893456000, verbose=False):
     """
       Generate random files with random content.
 
@@ -96,9 +96,9 @@ def populate_tree(target, files=5, size=800, start_time=1388534400,
       ----------
       target : str
           Path to the file tree where the files are being created.
-      files : int
-          Maximum number of directories to be created.
-      size : int
+      max_files : int
+          Maximum number of files to be created.
+      max_size : int
           Maximum size in kilobyte for each file.
       start_time : int
           Lower bound for access time (atime) and modified time (mtime)
@@ -110,12 +110,39 @@ def populate_tree(target, files=5, size=800, start_time=1388534400,
           Be loud about what to do.
     """
 
-    def create_files(root, dirs, files):
-        """
-          Function used in os.walk
+    def create_file(root, max_size, start_time, end_time):
+      """
+        Function used in os.walk via create_files
 
-          Following the logic of Python scoping, this is a local function,
-          only visible inside of populate_tree.
+        Parameters
+        ----------
+        root : string
+            This is where the files will be written
+        max_size : int
+          Maximum file size
+      """
+
+
+      name = random_string()
+      path = os.path.join(root, name)
+      delta_time = end_time - start_time
+      atime = start_time + int(random.choice(xrange(delta_time)))
+      mtime = start_time + int(random.choice(xrange(delta_time)))
+
+      debug("Creating file %s" % path, blue)
+      file = open(path, 'w')
+
+      max_size *= 1#024
+      chars_to_use = legal_chars + "\n"
+      content = random_string(max_size,legal_chars=chars_to_use)
+      file.write(content)
+
+      file.close()
+      os.utime(path, (atime, mtime))
+
+    def create_files(root, max_files, max_size, start_time, end_time):
+        """
+          Function used in os.walk to manage creation of files
 
           Parameters
           ----------
@@ -123,12 +150,17 @@ def populate_tree(target, files=5, size=800, start_time=1388534400,
               Current root
           dirs : list
               Names of the subdirectories in root (excluding '.' and '..')
-          files :
+          files : list
               Names of the non-directory files in dirpath.
         """
 
-    for root, dirs, files in os.walk(target):
-        create_files(root, dirs, files)
+        num_files_to_create = random.choice(xrange(max_files))
+        files = random.choice(xrange(max_files))
+        for _ in xrange(0, files):
+          create_file(root, max_size, start_time, end_time)
+
+    for root, _ , _ in os.walk(target):
+        create_files(root, max_files, max_size, start_time, end_time)
 
 
 
