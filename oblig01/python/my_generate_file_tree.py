@@ -21,23 +21,6 @@ def debug(msg, color=white):
   if config["verbose"]:
     print "\033["+color+"m"+msg+"\033[0m"
 
-def make_subfolder(root, width, depth):
-  if depth < 0:
-    return
-
-  try:
-    os.makedirs(root)
-    debug("Creating folder %s" % root, green)
-  except OSError:
-    if not os.path.isdir(root):
-      raise
-
-  rndWidth = random.choice(xrange(width))
-  for _ in xrange(rndWidth):
-    new_folder = os.path.join(root, random_string())
-    while(os.path.isdir(new_folder)):
-      new_folder = os.path.join(root, random_string())
-    make_subfolder(new_folder, width, depth-1)
 
 
 def random_string(max_length=10, prefix="", legal_chars=legal_chars):
@@ -64,9 +47,10 @@ def random_string(max_length=10, prefix="", legal_chars=legal_chars):
       raise ValueError
 
     length = random.choice(xrange(1,max_length))
-    generated_string = "".join(random.choice(legal_chars) for _ in xrange(length))
-    random_string = prefix + generated_string
-    return random_string
+
+    rnd_str = prefix + "".join(random.choice(legal_chars) for _ in xrange(length))
+
+    return rnd_str
 
 def generate_tree():
     """
@@ -81,6 +65,23 @@ def generate_tree():
       rec_depth : int
           Maximum directory depth.
     """
+    def make_subfolder(path, width, depth):
+      if depth < 0:
+        return
+
+      try:
+        os.makedirs(path)
+        debug("Creating folder %s" % path, green)
+      except OSError:
+        if not os.path.isdir(path):
+          raise
+
+      rndWidth = random.choice(xrange(width))
+      for _ in xrange(rndWidth):
+        new_folder = os.path.join(path, random_string())
+        while(os.path.isdir(new_folder)):
+          new_folder = os.path.join(path, random_string())
+        make_subfolder(new_folder, width, depth-1)
 
 
     make_subfolder(config["target"], config["dirs"], config["rec_depth"])
