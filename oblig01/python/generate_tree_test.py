@@ -13,7 +13,7 @@ def root_folder(request):
   folder_name = "fSEdfjGHFksief325sffsFs93fsSGG"
 
   def fin():
-    rmtree(folder_name)
+    rmtree(empty_folder)
   request.addfinalizer(fin)
 
   return folder_name
