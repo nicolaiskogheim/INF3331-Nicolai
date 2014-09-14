@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-verbose=0
+
+config = {}
 
 import random   # Random number generator
 import os       # Crossplatform OS rutines
@@ -17,7 +18,7 @@ blue="96"
 white="0"
 
 def debug(msg, color=white):
-  if verbose:
+  if config["verbose"]:
     print "\033["+color+"m"+msg+"\033[0m"
 
 def make_subfolder(root, width, depth):
@@ -70,7 +71,7 @@ def random_string(max_length=10, prefix="", legal_chars=legal_chars):
     random_string = prefix + generated_string
     return random_string
 
-def generate_tree(target, dirs=3, rec_depth=2):
+def generate_tree():
     """
       Genereate a random folder structure with random names.
 
@@ -85,10 +86,9 @@ def generate_tree(target, dirs=3, rec_depth=2):
     """
 
 
-    make_subfolder(target, dirs, rec_depth)
+    make_subfolder(config["target"], config["dirs"], config["rec_depth"])
 
-def populate_tree(target, max_files=5, max_size=800, start_time=946684800,
-        end_time=1893456000, verbose=False):
+def populate_tree():
     """
       Generate random files with random content.
 
@@ -110,7 +110,7 @@ def populate_tree(target, max_files=5, max_size=800, start_time=946684800,
           Be loud about what to do.
     """
 
-    def create_file(root, max_size, start_time, end_time):
+    def create_file(root):
       """
         Function used in os.walk via create_files
 
@@ -125,22 +125,22 @@ def populate_tree(target, max_files=5, max_size=800, start_time=946684800,
 
       name = random_string()
       path = os.path.join(root, name)
-      delta_time = end_time - start_time
-      atime = start_time + int(random.choice(xrange(delta_time)))
-      mtime = start_time + int(random.choice(xrange(delta_time)))
+      delta_time = config["end"] - config["start"]
+      atime = config["start"] + int(random.choice(xrange(delta_time)))
+      mtime = config["start"] + int(random.choice(xrange(delta_time)))
 
       debug("Creating file %s" % path, blue)
       file = open(path, 'w')
 
-      max_size *= 1#024
+      max_size = config["size"] * 1#024
       chars_to_use = legal_chars + "\n"
-      content = random_string(max_size,legal_chars=chars_to_use)
+      content = random_string(config["size"],legal_chars=chars_to_use)
       file.write(content)
 
       file.close()
       os.utime(path, (atime, mtime))
 
-    def create_files(root, max_files, max_size, start_time, end_time):
+    def create_files(root):
         """
           Function used in os.walk to manage creation of files
 
@@ -154,13 +154,12 @@ def populate_tree(target, max_files=5, max_size=800, start_time=946684800,
               Names of the non-directory files in dirpath.
         """
 
-        num_files_to_create = random.choice(xrange(max_files))
-        files = random.choice(xrange(max_files))
-        for _ in xrange(0, files):
-          create_file(root, max_size, start_time, end_time)
+        num_files_to_create = random.choice(xrange(config["files"]))
+        for _ in xrange(0, num_files_to_create):
+          create_file(root)
 
-    for root, _ , _ in os.walk(target):
-        create_files(root, max_files, max_size, start_time, end_time)
+    for root, _ , _ in os.walk(config["target"]):
+        create_files(root)
 
 
 
@@ -186,10 +185,18 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--verbose", default=False)
 
     args = parser.parse_args()
-    verbose = args.verbose
+    config["target"] = args.target
+    config["dirs"] = args.dirs
+    config["files"] = args.files
+    config["size"] = args.size
+    config["rec_depth"] = args.rec_depth
+    config["start"] = args.start
+    config["end"] = args.end
+    config["seed"] = args.seed
+    config["verbose"] = args.verbose
 
-    # Fix the random seed (if not None):
-    random.seed(int(args.seed) or None)
+    random.seed(args.seed or None)
 
-    generate_tree(args.target, args.dirs, args.rec_depth)
-    populate_tree(args.target, args.files, args.size, args.start, args.end)
+
+    generate_tree()
+    populate_tree()

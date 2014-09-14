@@ -2,8 +2,15 @@ import os
 import tempfile
 from shutil import rmtree
 from test_helpers import subfolder_count, calculate_tree_size, files_count_rec
-from my_generate_file_tree import generate_tree, populate_tree
+from my_generate_file_tree import generate_tree, populate_tree, config
 import pytest
+
+config["files"] = 2
+config["dirs"] = 2
+config["verbose"] = 0
+config["start"] = 1388534400
+config["end"] = 1406851200
+config["size"] = 20
 
 @pytest.fixture(scope="function")
 def root_folder(request):
@@ -20,7 +27,8 @@ def root_folder(request):
 
 @pytest.fixture(scope="function")
 def folder_tree(request, root_folder):
-  generate_tree(root_folder, 2, 2)
+  config["target"] = root_folder
+  generate_tree()
   return root_folder;
 
 class TestGenerateTree:
@@ -32,7 +40,10 @@ class TestGenerateTree:
     # Remove/edit this assertion to be able to run high values.
     assert width+depth < 12, "Warning, running high width and depth values is extremely slow."
 
-    generate_tree(root_folder, width, depth)
+    config["target"] = root_folder;
+    config["dirs"] = width;
+    config["rec_depth"] = depth
+    generate_tree()
     msg = "generate_tree: expected less than {0} folders, but got {1}."
 
     expected_folder_count = calculate_tree_size(width, depth)
@@ -44,7 +55,8 @@ class TestGenerateTree:
 class TestPopulateTree:
 
   def test_creates_files(self, folder_tree):
-    populate_tree(folder_tree)
+    config["target"] = folder_tree;
+    populate_tree()
 
     actual_files_count = files_count_rec(folder_tree)
 
