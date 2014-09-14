@@ -12,6 +12,7 @@ legal_chars = "abcdefghijklmnopqrstuvwxyz"+\
 
 green="92"
 yellow="93"
+red="91"
 blue="96"
 white="0"
 
