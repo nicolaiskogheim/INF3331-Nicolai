@@ -171,7 +171,7 @@ if __name__ == "__main__":
     parser.add_argument("files", help="maximun number of files in each folder",
                         type=int)
     parser.add_argument("-s", "--size", help="maximum file size",
-                        default=1000, type=int)
+                        default=600, type=int)
     parser.add_argument("-r", "--rec-depth", help="how deep to recurse",
                         default=2, type=int)
     parser.add_argument("-a", "--start", help="start limit for atime and mtime",
