@@ -2,6 +2,33 @@
 
 
 config = {}
+   """
+     Dictionary holding app-wide settings
+
+     Available keys
+     ---------------
+     target : string
+          Root of the file tree created by this program
+     dirs : int
+          Upper limit for number of directories in a directory
+     files : int
+          Upper limit for number of files in a directory
+     size : int
+          Maximum size in kilobyte for each file.
+     rec_depth : int
+          How deep to recurse
+     start : int
+          Lower bound for access time (atime) and modified time (mtime)
+          allowed in each file.
+          Denoted in Unix time format.
+     end : int
+          Same as start_time, but for upper bound.
+     seed : int
+          Number for fixing random.
+     verbose : boolean-ish
+          Be loud about what to do.
+          Any value will make this option true.
+   """
 
 import random   # Random number generator
 import os       # Crossplatform OS rutines
@@ -55,17 +82,20 @@ def random_string(max_length=10, prefix="", legal_chars=legal_chars):
 def generate_tree():
     """
       Genereate a random folder structure with random names.
-
-      Parameters
-      ----------
-      target : str
-          Path to the root where folders are to be created.
-      dirs : int
-          Maximum number of directories to be created per directory.
-      rec_depth : int
-          Maximum directory depth.
     """
     def make_subfolder(path, width, depth):
+        """
+          Creates folders recursively
+
+          Parameters
+          ----------
+          path : str
+              Path to the root where folders are to be created.
+          width : int
+              Maximum number of directories to be created per directory.
+          depth : int
+              Maximum directory depth.
+        """
       if depth < 0:
         return
 
@@ -89,23 +119,6 @@ def generate_tree():
 def populate_tree():
     """
       Generate random files with random content.
-
-      Parameters
-      ----------
-      target : str
-          Path to the file tree where the files are being created.
-      max_files : int
-          Maximum number of files to be created.
-      max_size : int
-          Maximum size in kilobyte for each file.
-      start_time : int
-          Lower bound for access time (atime) and modified time (mtime)
-          allowed in each file.
-          Denoted in Unix time format.
-      end_time : int
-          Same as start_time, but for upper bound.
-      verbose : bool
-          Be loud about what to do.
     """
 
     def create_file(root):
@@ -116,8 +129,6 @@ def populate_tree():
         ----------
         root : string
             This is where the files will be written
-        max_size : int
-          Maximum file size
       """
 
 
@@ -146,10 +157,6 @@ def populate_tree():
           ----------
           root : string
               Current root
-          dirs : list
-              Names of the subdirectories in root (excluding '.' and '..')
-          files : list
-              Names of the non-directory files in dirpath.
         """
 
         num_files_to_create = random.choice(xrange(config["files"]))
