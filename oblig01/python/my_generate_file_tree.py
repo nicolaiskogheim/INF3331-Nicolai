@@ -10,18 +10,22 @@ import sys      # interpreter tools
 legal_chars = "abcdefghijklmnopqrstuvwxyz"+\
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"+"0123456789_"
 
+green="92"
+yellow="93"
+blue="96"
+white="0"
 
-def debug(msg):
+def debug(msg, color=white):
   if verbose:
-    print msg
+    print "\033["+color+"m"+msg+"\033[0m"
 
 def make_subfolder(root, width, depth):
   if depth < 0:
     return
 
   try:
-    debug("Creating folder %s" % root)
-    debug("Entering folder %s" % root)
+    debug("Creating folder %s" % root, green)
+    #debug("Entering folder %s" % root, yellow)
     os.makedirs(root)
   except OSError:
     if not os.path.isdir(root):
@@ -31,7 +35,7 @@ def make_subfolder(root, width, depth):
     new_folder = os.path.join(root, random_string())
     make_subfolder(new_folder, width, depth-1)
 
-  debug("Exiting folder %s" % root)
+  #debug("Exiting folder %s" % root, red)
 
 
 def random_string(length=6, prefix="", legal_chars=legal_chars):
