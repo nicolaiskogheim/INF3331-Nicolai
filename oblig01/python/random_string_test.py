@@ -14,14 +14,14 @@ def test_random_string_returns_string():
   assert is_alphanumeric != None, "random_string should return a string"
 
 def test_random_string_param_length():
-  assert len(random_string(5)) == 5, 'random_string(5) should return string of length 5'
-  assert len(random_string(10)) == 10, 'random_string(10) should return string of length 10'
+  assert len(random_string(5)) <= 5, 'random_string(5) should return string of length beetween 5 and 1 inclusive'
+  assert len(random_string(10)) <= 10, 'random_string(10) should return string of length between 10 and 1 inclusive'
 
 def test_random_string_param_prefix():
   prefix = "pre"
   result = random_string(5, prefix)
 
-  assert len(result) == 8, "length of return value from random_string should be length + len(prefix)"
+  assert "pre" in result, "return value should start with prefix"
 
   prefix_plus_alphanumeric_pattern = re.compile(r'^'+prefix+'[a-zA-Z0-9_]+$')
   is_prefixed_alphanumeric = prefix_plus_alphanumeric_pattern.match(result)
@@ -41,4 +41,4 @@ def test_random_string_raises_exception_on_empty_legal_chars():
 
 def test_random_string_raises_exception_on_null_length():
   with pytest.raises(ValueError):
-    random_string(length=0)
+    random_string(max_length=0)
