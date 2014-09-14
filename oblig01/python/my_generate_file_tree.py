@@ -30,7 +30,7 @@ def random_string(max_length=10, prefix="", legal_chars=legal_chars):
       Parameters
       ----------
       length : int
-          Length of the string (not including the prefix part).
+          Maxlength of the string (not including the prefix part).
       prefix : string
           Prefix the string with some text.
       legal_chars : string
