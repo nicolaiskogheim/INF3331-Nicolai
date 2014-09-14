@@ -2,11 +2,11 @@ import os
 
 def subfolder_count(path, map = {}):
   """
-Count subfolders in path
+    Count subfolders in path
 
-Origin
-------
-http://stackoverflow.com/questions/19747408/how-get-number-of-subfolders-and-folders-using-python-os-walks
+    Origin
+    ------
+    http://stackoverflow.com/questions/19747408/how-get-number-of-subfolders-and-folders-using-python-os-walks
   """
   count = 0
   for f in os.listdir(path):
