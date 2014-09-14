@@ -83,7 +83,7 @@ def generate_tree():
     """
       Genereate a random folder structure with random names.
     """
-    def make_subfolder(path, width, depth):
+    def make_subfolders(path, width, depth):
         """
           Creates folders recursively
 
@@ -114,7 +114,7 @@ def generate_tree():
         make_subfolder(new_folder, width, depth-1)
 
 
-    make_subfolder(config["target"], config["dirs"], config["rec_depth"])
+    make_subfolders(config["target"], config["dirs"], config["rec_depth"])
 
 def populate_tree():
     """
