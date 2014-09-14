@@ -32,8 +32,11 @@ def make_subfolder(root, width, depth):
     if not os.path.isdir(root):
       raise
 
-  for _ in range(0, width):
+  rndWidth = random.choice(xrange(width))
+  for _ in xrange(rndWidth):
     new_folder = os.path.join(root, random_string())
+    while(os.path.isdir(new_folder)):
+      new_folder = os.path.join(root, random_string())
     make_subfolder(new_folder, width, depth-1)
 
   #debug("Exiting folder %s" % root, red)
@@ -62,7 +65,8 @@ def random_string(length=6, prefix="", legal_chars=legal_chars):
     if not legal_chars or not length:
       raise ValueError
 
-    generated_string = "".join(random.choice(legal_chars) for _ in range(length))
+    length = random.choice(xrange(1,max_length))
+    generated_string = "".join(random.choice(legal_chars) for _ in xrange(length))
     random_string = prefix + generated_string
     return random_string
 
