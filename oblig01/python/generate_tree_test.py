@@ -1,7 +1,7 @@
 import os
 import tempfile
 from shutil import rmtree
-from test_helpers import subfolder_count, calculate_tree_size, files_count
+from test_helpers import subfolder_count, calculate_tree_size, files_count_rec
 from my_generate_file_tree import generate_tree, populate_tree
 import pytest
 
@@ -46,6 +46,6 @@ class TestPopulateTree:
   def test_creates_files(self, folder_tree):
     populate_tree(folder_tree)
 
-    actual_files_count = files_count(folder_tree)
+    actual_files_count = files_count_rec(folder_tree)
 
     assert int(actual_files_count) > 0, "%d files were created" % actual_files_count

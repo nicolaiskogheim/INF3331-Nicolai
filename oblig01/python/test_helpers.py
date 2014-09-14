@@ -35,3 +35,29 @@ def calculate_tree_size(width, depth):
   for i in range(1, depth+1):
      sum += width**i
   return sum
+
+
+import os, os.path
+
+def files_count(path):
+  """
+    Count files in folder (non-recursively)
+
+    Parameters
+    ----------
+    path : string
+      Path to folder to count files in.
+  """
+  return len(os.walk(path).next()[2])
+
+def files_count_rec(path):
+  """
+    Recursicve count of files in path
+
+    Parameters
+    ----------
+    path : string
+      Path to folder where counting starts
+  """
+  file_count = sum((len(f) for _, _, f in os.walk(path)))
+  return file_count
