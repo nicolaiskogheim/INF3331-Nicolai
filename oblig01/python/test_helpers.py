@@ -19,6 +19,18 @@ def subfolder_count(path, map = {}):
 
 
 def calculate_tree_size(width, depth):
+  """
+  Calculate the numbers of folders
+  supposed to be created by
+  generate_tree
+
+  Parameters
+  ----------
+  width : int
+    Num folders in each folder
+  depth : int
+    How long to recurse
+  """
   sum = 0
   for i in range(1, depth+1):
      sum += width**i
