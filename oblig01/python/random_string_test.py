@@ -29,7 +29,7 @@ def test_random_string_param_prefix():
   assert is_prefixed_alphanumeric != None, "random_string should prefix the returned string"
 
 
-def test_random_string_is_random():
+def test_random_string_is_somewhat_random():
   result1 = random_string()
   result2 = random_string()
 
