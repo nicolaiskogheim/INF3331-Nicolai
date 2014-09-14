@@ -142,7 +142,7 @@ def populate_tree():
       debug("Creating file %s" % path, blue)
       file = open(path, 'w')
 
-      max_size = config["size"] * 1#024
+      max_size = config["size"] * 1024
       chars_to_use = legal_chars + "\n"
       content = random_string(config["size"],legal_chars=chars_to_use)
       file.write(content)
