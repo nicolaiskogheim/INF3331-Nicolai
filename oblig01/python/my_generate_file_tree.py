@@ -42,7 +42,7 @@ def make_subfolder(root, width, depth):
   #debug("Exiting folder %s" % root, red)
 
 
-def random_string(length=6, prefix="", legal_chars=legal_chars):
+def random_string(max_length=10, prefix="", legal_chars=legal_chars):
     """
       Create a random string of text.
 
@@ -62,7 +62,7 @@ def random_string(length=6, prefix="", legal_chars=legal_chars):
           A string of random charracters.
     """
     # Insert user code here
-    if not legal_chars or not length:
+    if not legal_chars or not max_length:
       raise ValueError
 
     length = random.choice(xrange(1,max_length))
