@@ -1,4 +1,4 @@
-import os
+import os, os.path
 
 def subfolder_count(path, map = {}):
   """
@@ -37,7 +37,6 @@ def calculate_tree_size(width, depth):
   return sum
 
 
-import os, os.path
 
 def files_count(path):
   """
@@ -49,6 +48,7 @@ def files_count(path):
       Path to folder to count files in.
   """
   return len(os.walk(path).next()[2])
+
 
 def files_count_rec(path):
   """

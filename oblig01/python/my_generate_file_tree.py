@@ -134,6 +134,7 @@ def populate_tree():
 
       name = random_string()
       path = os.path.join(root, name)
+
       delta_time = config["end"] - config["start"]
       atime = config["start"] + int(random.choice(xrange(delta_time)))
       mtime = config["start"] + int(random.choice(xrange(delta_time)))
@@ -174,18 +175,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("target", help="folder to create files in")
-    parser.add_argument("dirs", help="maximum number of folders in each folder",
-                        type=int)
-    parser.add_argument("files", help="maximun number of files in each folder",
-                        type=int)
-    parser.add_argument("-s", "--size", help="maximum file size",
-                        default=600, type=int)
-    parser.add_argument("-r", "--rec-depth", help="how deep to recurse",
-                        default=2, type=int)
-    parser.add_argument("-a", "--start", help="start limit for atime and mtime",
-                        default=1388534400, type=int)
-    parser.add_argument("-e", "--end", help="end limit for atime and mtime",
-                        default=1406851200, type=int)
+    parser.add_argument("dirs", help="maximum number of folders in each folder", type=int)
+    parser.add_argument("files", help="maximun number of files in each folder", type=int)
+    parser.add_argument("-s", "--size", help="maximum file size", default=600, type=int)
+    parser.add_argument("-r", "--rec-depth", help="how deep to recurse", default=2, type=int)
+    parser.add_argument("-a", "--start", help="start limit for atime and mtime", default=1388534400, type=int)
+    parser.add_argument("-e", "--end", help="end limit for atime and mtime", default=1406851200, type=int)
     parser.add_argument("-z", "--seed", help="seed to random", default=0, type=int)
     parser.add_argument("-v", "--verbose", default=False)
 
