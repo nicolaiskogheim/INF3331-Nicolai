@@ -26,9 +26,8 @@ def make_subfolder(root, width, depth):
     return
 
   try:
-    debug("Creating folder %s" % root, green)
-    #debug("Entering folder %s" % root, yellow)
     os.makedirs(root)
+    debug("Creating folder %s" % root, green)
   except OSError:
     if not os.path.isdir(root):
       raise
@@ -39,8 +38,6 @@ def make_subfolder(root, width, depth):
     while(os.path.isdir(new_folder)):
       new_folder = os.path.join(root, random_string())
     make_subfolder(new_folder, width, depth-1)
-
-  #debug("Exiting folder %s" % root, red)
 
 
 def random_string(max_length=10, prefix="", legal_chars=legal_chars):
@@ -62,7 +59,7 @@ def random_string(max_length=10, prefix="", legal_chars=legal_chars):
       rnd_str : str
           A string of random charracters.
     """
-    # Insert user code here
+
     if not legal_chars or not max_length:
       raise ValueError
 
