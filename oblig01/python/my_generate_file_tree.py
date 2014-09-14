@@ -5,7 +5,7 @@ verbose=0
 import random   # Random number generator
 import os       # Crossplatform OS rutines
 import sys      # interpreter tools
-
+import argparse # Tool for argument parsing
 
 legal_chars = "abcdefghijklmnopqrstuvwxyz"+\
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"+"0123456789_"
@@ -168,28 +168,28 @@ def populate_tree(target, max_files=5, max_size=800, start_time=946684800,
 # If-test to ensure code only executed if ran as stand-alone app.
 if __name__ == "__main__":
 
-    l = len(sys.argv)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("target", help="folder to create files in")
+    parser.add_argument("dirs", help="maximum number of folders in each folder",
+                        type=int)
+    parser.add_argument("files", help="maximun number of files in each folder",
+                        type=int)
+    parser.add_argument("-s", "--size", help="maximum file size",
+                        default=1000, type=int)
+    parser.add_argument("-r", "--rec-depth", help="how deep to recurse",
+                        default=2, type=int)
+    parser.add_argument("-a", "--start", help="start limit for atime and mtime",
+                        default=1388534400, type=int)
+    parser.add_argument("-e", "--end", help="end limit for atime and mtime",
+                        default=1406851200, type=int)
+    parser.add_argument("-z", "--seed", help="seed to random", default=0, type=int)
+    parser.add_argument("-v", "--verbose", default=False)
 
-    if l < 4:
-        print "Not enough arguments included."
-        print "usage: %s target dirs files " % sys.argv[0] +\
-            "[size rec_depth start end seed verbose]"
-        sys.exit(0)
-
-    target = sys.argv[1]
-    dirs = int(sys.argv[2])
-    files = int(sys.argv[3])
-
-    # And-or trick to use argv only if argv is long enough.
-    size = 1000 if l<5 else int(sys.argv[4])
-    rec_depth = 2 if l<6 else int(sys.argv[5])
-    start = 1388534400 if l<7 else int(sys.argv[6])
-    end = 1406851200 if l<8 else int(sys.argv[7])
-    seed = "0" if l<9 else sys.argv[8]
-    verbose = int("0") if l<10 else int(sys.argv[9])
+    args = parser.parse_args()
+    verbose = args.verbose
 
     # Fix the random seed (if not None):
-    random.seed(int(seed) or None)
+    random.seed(int(args.seed) or None)
 
-    generate_tree(target, dirs, rec_depth)
-    populate_tree(target, files, size, start, end)
+    generate_tree(args.target, args.dirs, args.rec_depth)
+    populate_tree(args.target, args.files, args.size, args.start, args.end)
