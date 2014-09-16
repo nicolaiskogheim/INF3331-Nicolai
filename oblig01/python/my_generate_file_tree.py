@@ -2,33 +2,33 @@
 
 
 config = {}
-   """
-     Dictionary holding app-wide settings
+"""
+   Dictionary holding app-wide settings
 
-     Available keys
-     ---------------
-     target : string
-          Root of the file tree created by this program
-     dirs : int
-          Upper limit for number of directories in a directory
-     files : int
-          Upper limit for number of files in a directory
-     size : int
-          Maximum size in kilobyte for each file.
-     rec_depth : int
-          How deep to recurse
-     start : int
-          Lower bound for access time (atime) and modified time (mtime)
-          allowed in each file.
-          Denoted in Unix time format.
-     end : int
-          Same as start_time, but for upper bound.
-     seed : int
-          Number for fixing random.
-     verbose : boolean-ish
-          Be loud about what to do.
-          Any value will make this option true.
-   """
+   Available keys
+   ---------------
+   target : string
+        Root of the file tree created by this program
+   dirs : int
+        Upper limit for number of directories in a directory
+   files : int
+        Upper limit for number of files in a directory
+   size : int
+        Maximum size in kilobyte for each file.
+   rec_depth : int
+        How deep to recurse
+   start : int
+        Lower bound for access time (atime) and modified time (mtime)
+        allowed in each file.
+        Denoted in Unix time format.
+   end : int
+        Same as start_time, but for upper bound.
+   seed : int
+        Number for fixing random.
+   verbose : boolean-ish
+        Be loud about what to do.
+        Any value will make this option true.
+ """
 
 import random   # Random number generator
 import os       # Crossplatform OS rutines
@@ -96,22 +96,22 @@ def generate_tree():
           depth : int
               Maximum directory depth.
         """
-      if depth < 0:
-        return
+        if depth < 0:
+          return
 
-      try:
-        os.makedirs(path)
-        debug("Creating folder %s" % path, green)
-      except OSError:
-        if not os.path.isdir(path):
-          raise
+        try:
+          os.makedirs(path)
+          debug("Creating folder %s" % path, green)
+        except OSError:
+          if not os.path.isdir(path):
+            raise
 
-      rndWidth = random.choice(xrange(width))
-      for _ in xrange(rndWidth):
-        new_folder = os.path.join(path, random_string())
-        while(os.path.isdir(new_folder)):
+        rndWidth = random.choice(xrange(width))
+        for _ in xrange(rndWidth):
           new_folder = os.path.join(path, random_string())
-        make_subfolder(new_folder, width, depth-1)
+          while(os.path.isdir(new_folder)):
+            new_folder = os.path.join(path, random_string())
+          make_subfolder(new_folder, width, depth-1)
 
 
     make_subfolders(config["target"], config["dirs"], config["rec_depth"])
