@@ -1,16 +1,24 @@
 import os
 import tempfile
 from shutil import rmtree
-from test_helpers import subfolder_count, calculate_tree_size, files_count_rec
-from my_generate_file_tree import generate_tree, populate_tree, config
 import pytest
+from test_helpers import subfolder_count, calculate_tree_size, files_count_rec
+from my_generate_file_tree import GFT
 
+generate_tree = GFT.generate_tree
+populate_tree = GFT.populate_tree
+
+config = {}
 config["files"] = 2
 config["dirs"] = 2
 config["verbose"] = 0
 config["start"] = 1388534400
 config["end"] = 1406851200
 config["size"] = 20
+
+@pytest.fixture(scope="module")
+def instance(request):
+  return GFT(config);
 
 @pytest.fixture(scope="function")
 def root_folder(request):
@@ -26,35 +34,35 @@ def root_folder(request):
   return folder_name
 
 @pytest.fixture(scope="function")
-def folder_tree(request, root_folder):
+def folder_tree(request, instance, root_folder):
   config["target"] = root_folder
-  generate_tree()
+  generate_tree(instance)
   return root_folder;
 
 class TestGenerateTree:
 
   @pytest.mark.parametrize("width, depth", [
-      (1,1), (2,2), (3,3), (9,2), (3,7)
+      (1,1), (2,2), (3,3), (9,2), (4,6)
   ])
-  def test_creates_folder_tree(self, root_folder, width, depth):
+  def test_creates_folder_tree(self, instance, root_folder, width, depth):
 
-    config["target"] = root_folder;
-    config["dirs"] = width;
-    config["rec_depth"] = depth
-    generate_tree()
+    instance.config["target"] = root_folder;
+    instance.config["dirs"] = width;
+    instance.config["rec_depth"] = depth
+    generate_tree(instance)
     msg = "generate_tree: expected less than {0} folders, but got {1}."
 
     expected_folder_count = calculate_tree_size(width, depth)
     actual_folder_count = subfolder_count(root_folder)
 
+    print "->", actual_folder_count, "folders"
     assert actual_folder_count <= expected_folder_count, msg.format(expected_folder_count, actual_folder_count)
-
 
 class TestPopulateTree:
 
-  def test_creates_files(self, folder_tree):
-    config["target"] = folder_tree;
-    populate_tree()
+  def test_creates_files(self, instance, folder_tree):
+    instance.config["target"] = folder_tree;
+    populate_tree(instance)
 
     actual_files_count = files_count_rec(folder_tree)
 
