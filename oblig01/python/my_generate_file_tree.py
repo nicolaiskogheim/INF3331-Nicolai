@@ -48,7 +48,6 @@ class GFT:
 
   def __init__(self, config={}):
     self.config = config
-    self.debug("hei", blue)
 
   legal_chars = "abcdefghijklmnopqrstuvwxyz"+\
           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"+"0123456789_"
