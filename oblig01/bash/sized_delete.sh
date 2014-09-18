@@ -1,4 +1,4 @@
-#!/usr/local/env bin
+#!/usr/local/env bash
 
 test $# -ne 2 && echo "${0##*/}: Expected two arguments path & size" && exit 1
 
