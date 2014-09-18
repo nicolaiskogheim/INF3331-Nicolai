@@ -160,7 +160,7 @@ class GFT:
 
         max_size = self.config["size"] * 1024
         chars_to_use = self.legal_chars + "\n"
-        content = self.random_string(self.config["size"],legal_chars=chars_to_use)
+        content = self.random_string(max_size,legal_chars=chars_to_use)
         file.write(content)
 
         file.close()
