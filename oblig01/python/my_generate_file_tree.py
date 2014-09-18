@@ -131,16 +131,16 @@ def populate_tree():
             This is where the files will be written
       """
 
-
-      name = random_string()
-      path = os.path.join(root, name)
+      file_path = os.path.join(root, random_string())
+      while(os.path.exists(file_path)):
+        file_path = os.path.join(root, random_string())
 
       delta_time = config["end"] - config["start"]
       atime = config["start"] + int(random.choice(xrange(delta_time)))
       mtime = config["start"] + int(random.choice(xrange(delta_time)))
 
-      debug("Creating file %s" % path, blue)
-      file = open(path, 'w')
+      debug("Creating file %s" % file_path, blue)
+      file = open(file_path, 'w')
 
       max_size = config["size"] * 1024
       chars_to_use = legal_chars + "\n"
@@ -148,7 +148,7 @@ def populate_tree():
       file.write(content)
 
       file.close()
-      os.utime(path, (atime, mtime))
+      os.utime(file_path, (atime, mtime))
 
     def create_files(root):
         """
