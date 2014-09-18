@@ -45,9 +45,15 @@ class GFT:
           Any value will make this option true.
    """
   config = {}
+  folderCount = 0
+  fileCount = 0
 
   def __init__(self, config={}):
     self.config = config
+
+  def __del__(self):
+    self.debug("Created " + str(self.folderCount) + " folders"\
+    +          " and " + str(self.fileCount) + " files.", "93")
 
   legal_chars = "abcdefghijklmnopqrstuvwxyz"+\
           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"+"0123456789_"
@@ -109,6 +115,7 @@ class GFT:
 
           try:
             os.makedirs(path)
+            self.folderCount+=1
             self.debug("Creating folder %s" % path, green)
           except OSError:
             if not os.path.isdir(path):
@@ -123,6 +130,7 @@ class GFT:
 
 
       make_subfolders(self.config["target"], self.config["dirs"], self.config["rec_depth"])
+
 
   def populate_tree(self):
       """
@@ -157,6 +165,7 @@ class GFT:
 
         file.close()
         os.utime(file_path, (atime, mtime))
+        self.fileCount+=1
 
       def create_files(root):
           """
@@ -174,7 +183,6 @@ class GFT:
 
       for root, _ , _ in os.walk(self.config["target"]):
           create_files(root)
-
 
 
 
