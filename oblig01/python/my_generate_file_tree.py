@@ -111,7 +111,7 @@ def generate_tree():
           new_folder = os.path.join(path, random_string())
           while(os.path.isdir(new_folder)):
             new_folder = os.path.join(path, random_string())
-          make_subfolder(new_folder, width, depth-1)
+          make_subfolders(new_folder, width, depth-1)
 
 
     make_subfolders(config["target"], config["dirs"], config["rec_depth"])
