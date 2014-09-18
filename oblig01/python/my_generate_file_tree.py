@@ -47,13 +47,15 @@ class GFT:
   config = {}
   folderCount = 0
   fileCount = 0
+  byteCount = 0
 
   def __init__(self, config={}):
     self.config = config
 
   def __del__(self):
     self.debug("Created " + str(self.folderCount) + " folders"\
-    +          " and " + str(self.fileCount) + " files.", "93")
+    +          " and " + str(self.fileCount) + " files" \
+    +          ", for a total of " + str(self.byteCount/1024) + " kilobytes", "93")
 
   legal_chars = "abcdefghijklmnopqrstuvwxyz"+\
           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"+"0123456789_"
@@ -88,8 +90,8 @@ class GFT:
         raise ValueError
 
       length = random.choice(xrange(1,max_length))
-
       rnd_str = prefix + "".join(random.choice(legal_chars) for _ in xrange(length))
+      self.byteCount+=len(rnd_str)
 
       return rnd_str
 
