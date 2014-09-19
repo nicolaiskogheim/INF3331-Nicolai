@@ -3,32 +3,261 @@
 \usepackage{fancyvrb}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage[table]{xcolor}
+\usepackage{framed,color,verbatim}
+\usepackage{minted}
+\usepackage{color}
+
+
+\definecolor{codegray}{gray}{0.95}
+\newcommand{\code}[1]{\colorbox{codegray}{\texttt{#1}}}
+
+\newcommand{\bs}[1]{{\texttt{\textbackslash #1}}}
 
 \title{Obligatorisk innlevering 1 høsten 2014, INF3331}
-\author{Kari Nordmann <kari.normann@veven.no>}
+\author{Nicolai Skogheim <nicolai.skogheim@gmail.com>}
 \date{\today}
+
 
 \begin{document}
 \maketitle
 
 \section*{Oppgave 1.1}
+Løsning (essensen):
+\begin{minted}{sh}
+folder=$1
+days=$2
 
-Oppgaven løst ved bruk av følgende komandoer:
+find -$folder -type f -mtime -${days}d | xargs du -h | sort -h}
+\end{minted}
 
 
-\subsection*{Kjøring}
+Find har flaggene \code{-type} og \code{-mtime}, for å velge hendholdsvis
+filer (\code{-type f}) og treff som har mtime innenfor de siste n dagene.\\
+
+\code{xargs} redistribuerer argumentene som kommer fra find gjennom pipa,
+og sender dem til \code{du} som har \code{-h} (human readable) flagget for
+å vise størrelsen på formen 1kb i stedet for 1024.\\
+
+Til sist sorteres alt via \code{sort}-kommandoen, som sorterer etter størrelse
+i human readable-format pga \code{-h}-flagget.\\
+
+Utover det som er svaret på oppgaven har jeg gjort et par ting som ikke
+var krevd, men som er god skikk i bash-programmer som krever argumenter.\\
+
+Det første er å sjekke at hvis det ikke er sendt med to argumenter (\code{\$\#} = antall argumenter),
+så skal det vises en liten melding med hjelp til brukeren.\\
+
+Jeg valgte også legge input-parameterene i variabler bare for å få navn på dem.
+
+\subsubsection*{Kjøring}
 \begin{Verbatim}
-Lim in utskrift av kjøring her
+14:36 $ bash list_new_files.sh file_tree 80
+644K	file_tree/Kq0Wv/H/XhdhBbk
+772K	file_tree/zg/Hu/vv/2KKnyIt5
+780K	file_tree/Kq0Wv/MH/Z9kP8NB
+780K	file_tree/Pkvye/vlfN/ZLbGhCmj
+788K	file_tree/Kq0Wv/MH/zWG/8puxfjS
 \end{Verbatim}
 
-Evt. kommentarer til kjøring.
 
 \section*{Oppgave 1.2}
 
-Evt. kommetarer til koding.
+Løsning: \\
+\begin{minted}{sh}
+find $1 -type f | xargs grep -n --color=always $2 \
+|| echo No files containing \"$2\" found.
+\end{minted}
+
+find finner filer (samme som oppagaven over med "-type f"-flagget),
+og sender treffene separert med linjeskift til stdout.
+Pipen fanger stdout og peker den til stdin for xargs, som i sin tur
+plasserer treffet i \code{grep} sin stdin. \code{grep}-flaggene
+\code{-n} og \code{--color=always} gjør at grep hendholdsvis viser
+linjenummer og farger treffene slik som vist i kjøreeksempelet.
+
+De første to strekene i linje to er det man forventer fra andre språk,
+altså en \code{OR}. Den siste linja vil altså bli kjørt bare hvis \code{grep}
+ikke får noen treff, fordi \code{grep} da vil ha en returkode større enn 0.
+Alle "gode" bash-programmer returnerer en statuskode som indikerer om operasjonen
+gikk bra. I \code{grep} sitt tilfelle, er "bra" at man får treff, og da vil \code{grep}
+returnere 0. Hvis det skjer, vil ikke den siste linja kjøre, fordi vi fikk treff.
+
+\subsubsection*{Kjøring}
+\begin{Verbatim}[commandchars=\\\{\}]
+11:50 $ bash find_word.sh file_tree bil
+file_tree/_CVcim:2006:eW68EPmXR\textcolor{red}{bil}ACbpN
+file_tree/fJgme5F:2971:Hw\textcolor{red}{bil}R0c7PtSZ7fiUdc80q6jf3DIbS9_Kq9fe
+file_tree/Kq0Wv/MH/7GvTL2y:4284:F\textcolor{red}{bil}umBAFScZqD3ih0_
+file_tree/Kq0Wv/MH/_Oj2c0QA:7674:suJ19WkYf4_juYYVu4F\textcolor{red}{bil}L
+
+11:51 $ bash find_word.sh file_tree java
+No files containing "java" found.
+\end{Verbatim}
+
+\section*{Oppgave 1.3}
+
+Løsning:
+\begin{minted}{sh}
+path=$1
+size=$2
+
+files_to_delete=$(find $path -size +${size}k -print)
+
+if [ -n "$files_to_delete" ]
+then
+  echo Deleting...
+  echo "$files_to_delete"
+  rm -- $files_to_delete
+else
+  echo No files of size $size kilobytes or larger found.
+fi
+
+exit 0
+\end{minted}
+
+Først fanger jeg output fra \code{find} i variabelen \code{files\_to\_delete}
+ved hjelp av \textit{variabelsubstitusjon}.
+\code{-size} begrenser søket til en gitt størrelse, plussen betyr \textit{større enn},
+og \textit{k} er for kilobyte.
+Så blir det: \textit{hvis} \code{-n}(notempty) \code{\$files\_to\_delete}
+så: output "Deleting", filer som skal slettes, og kjør kommandoen. \\
+ellers: output "No files [...]".
+
+Med \code{-\--} etter en kommando (eller \code{rm} i eksempelet) sier man at det ikke kommer flere flagg,
+som i dette tilfellet betyr at programmet ikke tryner på filer som \textit{-testfil.txt}.
+
+\subsubsection*{Kjøring}
+\begin{Verbatim}
+16:59 $ bash sized_delete.sh file_tree 80
+Deleting...
+file_tree/_CVcim
+file_tree/fJgme5F
+file_tree/Kq0Wv/MH/7GvTL2y
+file_tree/Kq0Wv/MH/_Oj2c0QA
+file_tree/Kq0Wv/MH/gBwNRP
+file_tree/Kq0Wv/MH/XhdhBbk
+file_tree/Kq0Wv/MH/Z9kP8NB
+
+
+17:00 $ bash sized_delete.sh file_tree 80
+No files of size 80 kilobytes or larger found.
+\end{Verbatim}
+
+
+\section*{Oppgave 1.4}
+
+Løsning:
+\begin{minted}{sh}
+cat $1 | sort > $2
+\end{minted}
+
+\code{cat} leser fra førte argument (\$1), spytter linjene til sort,
+som etter sortering sender output til andre argument (\$2) fordi det
+er en \code{>} i mellom.\\
+
+Dette tryner selvfølgelig hvis argumentene ikke er filer eller fildescriptorer.
+
+\subsubsection*{Kjøring}
 
 \begin{Verbatim}
-Lim in utskrift av kjøring her
+17:09 $ bash sort_file.sh unsorted_fruits sorted_fruits
+
+17:37 $ cat sorted_fruits
+apple
+grape
+orange
+pear
+pineapple
 \end{Verbatim}
+
+
+\subsection*{Kommentar}
+I noen av filene står det \code{\#!/usr/local/env bash} i stedet
+for det vanlige \code{\#!/usr/bin}. Dette er fordi jeg jobber
+på mac som kjører bash3.2 og mangler de kule gnu-verktøya, og derfor
+trenger jeg å hente ting fra andre steder enn /bin/bash.
+Sånn som det står nå vil det virke hos andre også.
+
+
+\section*{Oppgave 2}
+
+
+\subsubsection*{Kjøring}
+En prøvekjøring kan gjøres ved å kjøre kommandoen
+\begin{minted}{sh}
+cd python
+python my_generate_file_tree.py file_tree 10 10 --rec-depth 4
+\end{minted}
+
+\subsubsection*{Argumentparsing}
+I stedet for metoden som var foreslått i startfila har jeg brukt
+argparse til å holde styr på argumenter.\\
+
+Skriv
+\begin{minted}{sh}
+python my_generate_file_tree -h
+\end{minted}
+for å få informasjon om hvordan man setter de forskjellige argumentene.
+
+
+\subsubsection*{Funksjoner}
+  Jeg har brukt \code{os.walk} i stedet for den utdaterte \code{os.path.walk}
+  Den genererer en tuple du kan bruke i en loop, i stedet for at du sender
+  med callback.
+
+\subsubsection*{Randomness}
+  Programmet vil stemple filer med tilfeldige atime's og mtime's,
+  generere fra null til <grenseverdi> antall filer og mapper.
+  Bortsett fra det er det random\_string som har ansvaret for
+  tilfeldig lengde på fil- og mappenavn samt filinnhold.
+
+\subsubsection*{Config-objektet}
+  I og med at argumenter som sendes inn via terminalen gjelder
+  hele app'en og det meste av funksjoner avhenger av dette
+  har jeg valgt å legge alle argumentene i et config-objekt.\\
+
+  Jeg mener det gjør koden enklere å ha med å gjøre, og jeg slipper
+  de lange stygge signaturene med mange parametere og default-verdier.
+  I tillegg havner plutselig dokumentasjonen for alt på samme sted,
+  og det er ålreit.\\
+
+
+
+\subsubsection*{Testing}
+  Jeg har valgt å skrive tester, og disse kan kjøres med for eksempel
+  \code{py.test -vls}
+
+
+\subsubsection*{Kjøring av tester}
+\begin{Verbatim}[commandchars=\\\{\}]
+14:44 $ py.test -l
+================================= test session starts ==================================
+platform darwin -- Python 2.7.5 -- py-1.4.24 -- pytest-2.6.2
+collected 12 items
+
+generate_populate_tree_test.py ......
+random_string_test.py ......
+
+\color{green}============================== 12 passed in 1.12 seconds ===============================
+\end{Verbatim}
+
+\subsubsection*{Kjøring av program}
+\begin{Verbatim}[commandchars=\\\{\}]
+11:51 $ python my_generate_file_tree.py file_tree 5 5 --rec-depth 3 -v yes --seed 7653
+\color{lime}Creating folder file_tree
+\color{lime}Creating folder file_tree/IBYM
+\color{lime}Creating folder file_tree/IBYM/_C
+\color{lime}Creating folder file_tree/IBYM/_C/FZ
+\color{cyan}Creating file file_tree/AaRr6
+\color{cyan}Creating file file_tree/ip40OeguE
+\color{cyan}Creating file file_tree/eSEzkLN
+\color{cyan}Creating file file_tree/v
+\color{cyan}Creating file file_tree/7nsit70RP/l
+
+\color{yellow}Created 27 folders and 45 files, for a total of 14893 kilobytes
+* Forkortet output
+\end{Verbatim}
+
 
 \end{document}
