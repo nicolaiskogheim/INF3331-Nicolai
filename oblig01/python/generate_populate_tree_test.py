@@ -1,4 +1,5 @@
 import os
+import random
 import tempfile
 from shutil import rmtree
 import pytest
@@ -15,6 +16,8 @@ config["verbose"] = 0
 config["start"] = 1388534400
 config["end"] = 1406851200
 config["size"] = 20
+
+random.seed(7732);
 
 @pytest.fixture(scope="module")
 def instance(request):
@@ -41,22 +44,24 @@ def folder_tree(request, instance, root_folder):
 
 class TestGenerateTree:
 
-  @pytest.mark.parametrize("width, depth", [
-      (1,1), (2,2), (3,3), (9,2), (4,6)
+  @pytest.mark.parametrize("width, depth, expected", [
+      (1,1,1), (2,2,2), (3,3,5), (9,2,55), (4,6,209)
   ])
-  def test_creates_folder_tree(self, instance, root_folder, width, depth):
+  def test_creates_folder_tree(self, instance, root_folder, width, depth, expected):
 
     instance.config["target"] = root_folder;
     instance.config["dirs"] = width;
     instance.config["rec_depth"] = depth
     generate_tree(instance)
-    msg = "generate_tree: expected less than {0} folders, but got {1}."
+    msg1 = "generate_tree: expected {0} folders, but got {1}."
+    msg2 = "generate_tree: expected less than {0} (abs max) folders, but got {1}."
 
-    expected_folder_count = calculate_tree_size(width, depth)
+    calculated_max_folder_count = calculate_tree_size(width, depth)
     actual_folder_count = subfolder_count(root_folder)
 
     print "->", actual_folder_count, "folders"
-    assert actual_folder_count <= expected_folder_count, msg.format(expected_folder_count, actual_folder_count)
+    assert actual_folder_count == expected, msg1.format(expected, actual_folder_count)
+    assert actual_folder_count <= calculated_max_folder_count, msg2.format(calculated_max_folder_count, actual_folder_count)
 
 class TestPopulateTree:
 
