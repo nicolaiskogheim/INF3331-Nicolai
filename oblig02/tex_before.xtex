@@ -31,6 +31,8 @@ print out
 
 \section*{Branching}
 
+%@var lang=python
+
 %@show lang==matlab
 %@verb
 for i=1:10
