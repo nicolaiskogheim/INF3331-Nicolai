@@ -12,7 +12,7 @@ TOC:
 - [x] Oppgave 5: Kode-eksekvering
 - [x] Oppgave 6: Skjult tekst
 - [x] Oppgave 7: Kompilering av preprosessert LATEX-fil
-- [-] Oppgave 9: Filtre
+- [x] Oppgave 9: Filtre
 - [] Oppgave 10: Linjenummerering
 - [] Oppgave 11: Front-end til preprosessor
 - [] Oppgave 12: Testing og dokumentasjon
