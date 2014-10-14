@@ -1,0 +1,5 @@
+%@import
+Dette er en viktig melding fra test.tex, som er inkludert.
+%@
+
+%@badcommand from test.tex

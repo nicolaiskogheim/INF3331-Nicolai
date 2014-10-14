@@ -1,0 +1,36 @@
+Programskisse:
+
+Programmet kalles med en innfil og en utfil
+innfila er en tex-fil som skal preprosseseres,
+og utfila er destinasjonen til resultatet av programmet
+
+
+Meta:
+  SYMBOL = %@
+  KOMMANDO : en tekststreng som trigger et kall i preprosessoren
+             f.eks.: exec, verb, import
+  CAPTURE : global-aktig variabel for å si at linjer som skannes
+            skal samles opp for bruk med forrige KOMMANDO
+
+Åpne fil
+splitt fil i linjer (dette for å holde styr på linjernummer,
+                     og for å lettere kunne behandle fila)
+
+for hver linje
+  hvis linje starter med SYMBOL
+    linje, err = kall tokenizer med linje
+  hvis CAPTURE: // settes av tokenizer
+    capture(linje)
+
+
+pseuso-def tokenizer():
+  list single_line_commands = ["import", "exec", "var","fi"]
+  list multi_line_commands = ["verb", "python", "show"]
+
+  fjern %@
+  split by space
+  case første_element:
+    single_line_commands: kommando(resten_av_element)
+                          break
+    multi_line_commands : kommando
+    * : throw new UndefinedCommandException(KOMMANDO, linenum)
