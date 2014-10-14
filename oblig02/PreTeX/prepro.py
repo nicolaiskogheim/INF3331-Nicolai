@@ -221,8 +221,9 @@ class PreproIncluded(Handler):
         originalFile = os.path.join(fpath, fname + ext)
 
         if not os.path.exists(originalFile):
-            self.result = "\\include{"+ originalFile +"}"
+            self.result = "" #"\\include{"+ originalFile +"}"
             print "Error: '{0}' is not a file!".format(originalFile)
+            print "It will not be included in the resulting .tex file."
             return
 
         #if ext not "xtex": warn("Extension not xtex in {0}".format(fpath+ext))
