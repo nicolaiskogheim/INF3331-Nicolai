@@ -1,4 +1,5 @@
 import argparse
+import inspect
 import os
 import re
 import subprocess
@@ -233,7 +234,8 @@ class PreproIncluded(Handler):
 
         targetPath = os.path.join(include_folder,fpath, fname + ".tex")
 
-        result, err = Helper().execute(["python","prepro.py", originalFile, targetPath])
+        thisScript = inspect.stack()[0][1]
+        result, err = Helper().execute(["python",thisScript, originalFile, targetPath])
 
 
         # if err: out err
