@@ -279,7 +279,7 @@ class Scanner:
                     self.capturing = False
                     self.handler.handle(self.release())
                     scanForNestedBlocks = Scanner().scan(self.handler.output(), token=token, startLine=i)
-                    newfile += scanForNestedBlocks
+                    newfile += scanForNestedBlocks + "\n"
                     self.addLineNumberMap(i+1+startLine, 1+len(newfile.split('\n')) -1)
 
                     continue
