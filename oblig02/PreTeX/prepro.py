@@ -232,10 +232,10 @@ class PreproIncluded(Handler):
         if not os.path.exists(include_folder):
             os.makedirs(include_folder)
 
-        targetPath = os.path.join(include_folder,fpath, fname + ".tex")
+        targetPath = os.path.join(include_folder,fpath, fname)
 
         thisScript = inspect.stack()[0][1]
-        result, err = Helper().execute(["python",thisScript, originalFile, targetPath])
+        result, err = Helper().execute(["python",thisScript, originalFile, targetPath+".tex"])
 
 
         # if err: out err
