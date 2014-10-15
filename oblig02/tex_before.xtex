@@ -80,6 +80,7 @@ for i in xrange(10):
 %@
 %@fi
 
+\bad
 
 %@hide lang==matlab
 %@verb
@@ -95,6 +96,8 @@ for i in xrange(10):
     print i+1
 %@
 %@fi
+
+%@include{test_file_inclusion/errorfolder/tex_error.xtex}
 
 %@include{path/to.xtex}
 
