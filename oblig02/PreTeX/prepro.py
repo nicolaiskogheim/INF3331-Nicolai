@@ -114,7 +114,7 @@ class FakeInlineExec(Handler):
     endToken = "%@"
     multiline = endToken != None
     pattern = re.compile(r'^exec\s*$')
-    action = "Wrappen inline execution"
+    action = "Wrapped inline execution"
 
     def handle(self, input):
         _, content = input.split("\n", 1)
