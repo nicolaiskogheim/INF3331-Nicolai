@@ -15,7 +15,7 @@ def compile_latex(source, inter=False):
     out, err = proc.communicate()
 
     if inter:
-        error_lines = re.compile(r'^(..?\/[\w/.]+:)([\d]+)(:.*)$')
+        error_lines = re.compile(r'(..?\/[\w/.]+(?:\n[\w/.]+)?):([\d]+(?:\n[\d]+)?):(.*(?:\n.*)?)')
         output = ""
 
         output_lines = out.split("\n")
