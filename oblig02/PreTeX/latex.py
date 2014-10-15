@@ -2,7 +2,7 @@ class Latex(object):
 
       def verbatim(self, content):
           before="\\begin{Verbatim}"
-          after="\\end{Verbatim}"
+          after="\\end{Verbatim}\n"
 
           return "\n".join([before, content, after])
 
@@ -10,7 +10,8 @@ class Latex(object):
           before="""\\begin{Verbatim}[numbers=none,frame=lines,label=\\fbox{{\\tiny Terminal}},fontsize=\\fontsize{9pt}{9pt},
 labelposition=topline,framesep=2.5mm,framerule=0.7pt]"""
           after="""\\end{Verbatim}
-\\noindent"""
+\\noindent
+"""
 
           return "\n".join([before, content, after])
 
@@ -20,6 +21,7 @@ labelposition=topline,framesep=2.5mm,framerule=0.7pt]"""
 \\begin{Verbatim}"""
           after="""\\end{Verbatim}
 \\end{shadedquoteBlueBar}
-\\noindent"""
+\\noindent
+"""
 
           return "\n".join([before, content, after])
