@@ -15,22 +15,23 @@ def compile_latex(source, inter=False):
     out, err = proc.communicate()
 
     if inter:
-        error_lines = re.compile(r'(..?\/[\w/.]+(?:\n[\w/.]+)?):([\d]+(?:\n[\d]+)?):(.*(?:\n.*)?)')
+        error_lines_pattern = re.compile(r'(..?\/[\w/.]+(?:\n[\w/.]+)?):([\d]+(?:\n[\d]+)?):(.*(?:\n.*)?)')
         output = ""
 
-        output_lines = out.split("\n")
-        lnrMap = getLnrMap(source)
+        lnrs = {} #Map with lnr-maps
+        for line in error_lines_pattern.finditer(out):
+            path = line.group(1).replace("\n", "")
+            lnr  = line.group(2).replace("\n", "")
+            msg  = line.group(3).replace("\n", "")
 
-        for line in output_lines:
-            match = error_lines.match(line)
-            if match:
-                path = match.group(1)
-                lnr  = match.group(2)
-                msg  = match.group(3)
-                lnr = getRealLnr(lnr, lnrMap)
-                output += path+lnr+msg + "\n"
+            if not path in lnrs:
+                lnrs[path] = getLnrMap(path)
+
+            lnr = getRealLnr(lnr, lnrs[path])
+            output += "{0}:{1}:{2}\n".format(path, lnr, msg)
 
         # Append last two lines of output from pdflatex
+        out = out.split("\n")
         output += "\n".join(out[len(out) - 3:])
 
         print "Output:"
