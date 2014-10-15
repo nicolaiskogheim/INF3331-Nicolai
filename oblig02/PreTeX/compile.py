@@ -9,7 +9,7 @@ def compile_latex(source, inter=False):
     args.append("-file-line-error")
     if inter:
       args.append("-interaction=nonstopmode")
-    args.append(source_file)
+    args.append(source)
 
     proc = subprocess.Popen(args, stdout=subprocess.PIPE if inter else None, stderr=subprocess.PIPE)
     out, err = proc.communicate()
