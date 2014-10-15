@@ -31,8 +31,7 @@ def compile_latex(source, inter=False):
                 output += path+lnr+msg + "\n"
 
         # Append last two lines of output from pdflatex
-        output += output_lines[len(output_lines) - 3] + "\n"
-        output += output_lines[len(output_lines) - 2]
+        output += "\n".join(out[len(out) - 3:])
 
         print "Output:"
         print output
