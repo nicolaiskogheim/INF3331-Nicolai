@@ -37,6 +37,9 @@ def compile_latex(source, inter=False):
         print "Output:"
         print output
 
+        if err:
+            print "\n\n"
+            print err
 
 def getLnrMap(path):
     mapPattern = re.compile(r'%\[((?:\d+:\d+,)*(?:\d+:\d+))\]')
