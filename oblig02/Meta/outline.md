@@ -13,7 +13,8 @@ TOC:
 - [x] Oppgave 6: Skjult tekst
 - [x] Oppgave 7: Kompilering av preprosessert LATEX-fil
 - [x] Oppgave 9: Filtre
-- [] Oppgave 10: Linjenummerering
+- [x] Oppgave 10: Linjenummerering
+  - Fails on included files
 - [] Oppgave 11: Front-end til preprosessor
 - [] Oppgave 12: Testing og dokumentasjon
 - [] Oppgave 13: Rapport

@@ -15,14 +15,20 @@ def compile_latex(source, inter=False):
     out, err = proc.communicate()
 
     if inter:
-        error_lines = re.compile(r'^..?\/[\w/.]+:[\d]+:.*$')
+        error_lines = re.compile(r'^(..?\/[\w/.]+:)([\d]+)(:.*)$')
         output = ""
 
         output_lines = out.split("\n")
+        lnrMap = getLnrMap(source)
 
         for line in output_lines:
-            if error_lines.match(line):
-                output += line + "\n"
+            match = error_lines.match(line)
+            if match:
+                path = match.group(1)
+                lnr  = match.group(2)
+                msg  = match.group(3)
+                lnr = getRealLnr(lnr, lnrMap)
+                output += path+lnr+msg + "\n"
 
         # Append last two lines of output from pdflatex
         output += output_lines[len(output_lines) - 3] + "\n"
@@ -36,6 +42,31 @@ def compile_latex(source, inter=False):
 
     # print "ERR:"
     # print err
+
+def getLnrMap(path):
+    mapPattern = re.compile(r'%\[((?:\d+:\d+,)*(?:\d+:\d+))\]')
+    with open(path, 'r') as f:
+        lastLine = f.read().rstrip().split("\n")[-1]
+
+    match = mapPattern.match(lastLine)
+    if not match:
+        print "Error: input file not properly formatted."
+        print "\tPlease run it through the preprocessor again."
+        raise Exception
+    else:
+        lnrMap = match.group(1).split(",")
+
+        return lnrMap
+
+def getRealLnr(lnr, lnrMap):
+    lnr = int(lnr)
+    lastLnr = 0
+    for m in lnrMap:
+      orig, new = m.split(":")
+      if lnr < int(new):
+        return lastLnr
+      else:
+        lastLnr = orig
 
 
 if __name__ == "__main__":
