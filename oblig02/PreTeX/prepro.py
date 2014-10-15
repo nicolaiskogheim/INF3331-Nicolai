@@ -157,7 +157,6 @@ class InlineShellCmd(Handler):
 
           executed, err = Helper().execute([command,'-c',"""\n{0}""".format(code)])
 
-          firstLine = "$ {0} {1}".format(firstLine, fakeargs)
           self.result = "\n".join([firstLine, executed]).rstrip("\n")
 
       def output(self, wrapper=Latex().terminal):
