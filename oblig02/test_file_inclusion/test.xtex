@@ -1,5 +1,29 @@
+\begin{document}
+
 %@import
 Dette er en viktig melding fra test.tex, som er inkludert.
 %@
 
+\realbad
+
 %@badcommand from test.tex
+
+%@python this_was_run_inline.py
+out = 20
+for o in xrange(2, 40):
+    out += o
+print out
+print "#this code is in an imported file :O"
+%@
+
+%@verb
+  This is something verbatim
+%@
+
+\@begin bad command
+
+%@verb
+  This is more verbatim stuff
+%@
+
+\end{document}
