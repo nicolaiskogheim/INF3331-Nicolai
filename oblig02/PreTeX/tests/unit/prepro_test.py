@@ -2,7 +2,7 @@ import pytest
 import os.path
 import tempfile
 from shutil import rmtree
-from prepro import Scanner, Handler, Handlers, FileHelper, Helper, Import, Exec, Verb
+from PreTeX.prepro import Scanner, Handler, Handlers, FileHelper, Helper, Import, Exec, Verb
 
 
 class TestScanner:

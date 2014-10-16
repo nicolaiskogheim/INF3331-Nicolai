@@ -1,6 +1,6 @@
 import os
 import tempfile
-from prepro import FileHelper
+from PreTeX.prepro import FileHelper
 
 def setup_module(module):
     tmpdir = tempfile.mkdtemp()
