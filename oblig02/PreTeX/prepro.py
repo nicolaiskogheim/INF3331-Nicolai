@@ -1,5 +1,6 @@
 import argparse
 import inspect
+import logging
 import os
 import re
 import subprocess
@@ -40,7 +41,7 @@ class Handler(object):
     def wants(self, input):
         acceptsLine = True if self.pattern.match(input) else False
         if acceptsLine:
-            print self.__class__.__name__ + " takes care of: " + input
+            logging.info("  "+self.__class__.__name__+" handler processes: "+input)
         return acceptsLine
 
     def handle(*args, **kwargs):
@@ -193,8 +194,8 @@ class PreproIncluded(Handler):
 
         if not os.path.exists(originalFile):
             self.result = "" #"\\include{"+ originalFile +"}"
-            print "Error: '{0}' is not a file!".format(originalFile)
-            print "It will not be included in the resulting .tex file."
+            logging.warn("'{0}' is not a file!".format(originalFile))
+            logging.warn("It will not be included in the resulting .tex file.")
             return
 
         #if ext not "xtex": warn("Extension not xtex in {0}".format(fpath+ext))
@@ -337,7 +338,19 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("source", help="path to xtex to preprocess")
     parser.add_argument("destination", help="path to preprocessed file")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-v", "--verbose", action="store_true", default=False,
+                        help="Be verbose about what is going on")
+    group.add_argument("-q", "--quiet", action="store_true", default=False,
+                        help="Suppress normal output. Returns >0 on error, 0 otherwise.")
     args = parser.parse_args()
+
+    if args.verbose:
+        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
+    elif args.quiet:
+        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.CRITICAL)
+    else:
+        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.WARNING)
 
     sourcefile = FileHelper().load(args.source)
     output = Scanner().scan(sourcefile)

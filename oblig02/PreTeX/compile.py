@@ -1,4 +1,5 @@
 import argparse
+import logging
 import re
 import subprocess
 
@@ -34,12 +35,10 @@ def compile_latex(source, inter=False):
         out = out.split("\n")
         output += "\n".join(out[len(out) - 3:])
 
-        print "Output:"
-        print output
+        logging.info("\n"+output)
 
         if err:
-            print "\n\n"
-            print err
+            logging.error(err)
 
 def getLnrMap(path):
     mapPattern = re.compile(r'%\[((?:\d+:\d+,)*(?:\d+:\d+))\]')
@@ -48,9 +47,11 @@ def getLnrMap(path):
 
     match = mapPattern.match(lastLine)
     if not match:
-        print "Error: input file not properly formatted."
-        print "\tPlease run it through the preprocessor again."
-        raise Exception
+        logging.error("Input file not properly formatted.")
+        logging.error("\tPlease run it through the preprocessor again.")
+        logging.error("This means that the linenumbers will point to")
+        logging.error("the preprocessed file rather than the unprocessed one.")
+        lnrMap = None
     else:
         lnrMap = match.group(1).split(",")
 
@@ -58,6 +59,10 @@ def getLnrMap(path):
 
 def getRealLnr(lnr, lnrMap):
     lnr = int(lnr)
+
+    if not lnrMap:
+      return lnr
+
     lastLnr = 0
     for m in lnrMap:
       orig, new = m.split(":")
@@ -73,9 +78,19 @@ if __name__ == "__main__":
     parser.add_argument("source", help="Path to file to comiple")
     parser.add_argument("-i", "--interactive", help="turn on interaction",
                         default=False, action="store_true")
-
-
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-v", "--verbose", action="store_true", default=False,
+                        help="Be verbose about what is going on")
+    group.add_argument("-q", "--quiet", action="store_true", default=False,
+                        help="Suppress normal output. Returns >0 on error, 0 otherwise.")
     args = parser.parse_args()
+
+    if args.verbose:
+        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
+    elif args.quiet:
+        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.CRITICAL)
+    else:
+        logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
     source_file = args.source
     inter = args.interactive
