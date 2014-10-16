@@ -12,7 +12,10 @@ class TestScanner:
 
         result = Scanner().scan(text)
 
-        assert result == text
+        # Assert that the result begins with `text`
+        # This is because the scanner adds a line number map
+        # at the bottom
+        assert result.find(text) == 0
 
 
 class TestImportHandler:
@@ -69,7 +72,7 @@ class TestImportHandler:
           x = Import()
           x.handle(handlerInput)
 
-          assert x.output() == "\t\tthis"
+          assert x.output(wrapper=None) == "\t\tthis"
 
 class TestExecHandler:
 
@@ -90,7 +93,7 @@ class TestExecHandler:
 
       def test_exec_handler_executes_code(self, monkeypatch):
           def execmock(*args):
-              return 24.0
+              return "24.0", ""
           monkeypatch.setattr(Helper, 'execute', execmock)
 
           handlerInput = "exec python script_example.py 4"
@@ -98,7 +101,7 @@ class TestExecHandler:
 
           handler.handle(handlerInput)
 
-          assert handler.output() == 24.0
+          assert handler.output(wrapper=None) == "$ python script_example.py 4\n24.0"
 
 
 

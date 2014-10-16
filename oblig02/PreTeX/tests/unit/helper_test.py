@@ -30,6 +30,6 @@ class TestHelper:
           command = "python"
           args = "dummy.py 3"
 
-          result = Helper().execute(command, args)
+          result = Helper().execute([command, args])
 
-          assert result == "24.0"
+          assert result[0] == "24.0"
