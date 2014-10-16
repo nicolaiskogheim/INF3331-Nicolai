@@ -60,21 +60,24 @@ The preprosessor consists of three main parts:
 
 ###Command handlers
 Methods for replacing markup with latex.
-Implements a `wants(line) return (boolean wants[, str endCaptureToken=%@])` that the
-scanner will use to know where to send output, and whether call
-the function with the single line or with multiple lines.
-There should be an handler iterator that the scanner can use.
-The iterator takes care of only providing correct functions.
+Implements a `wants(line) return boolean wants` that the
+scanner uses to know where to send output, and a
+`multiline` property to know whether to call
+the function with the single line or with more lines until `endtoken` is met.
+There will be an iterator that provides the scanner with these handlers.
 See [PyDoc on iterators](https://docs.python.org/2/tutorial/classes.html#iterators)
 
 ###Command-helpers
 Utility functions that is shared between the handlers,
-like executing code
+like executing code, or loading or saving files.
 
 ###Scanner
-Goes through the unprocessed PreTeX file line by line,
-and for each line asking each of the command handlers
-to handle the line.
+Scans the unprocessed PreTeX file line by line,
+and for each line iterates over the handlers till
+a handler that wants the line is met.  
+This function also takes care of building the
+line number map which is for the compiler so that
+it can know where each line in the new file originated from.
 
 
 Additionally there should some functionality to support
@@ -89,11 +92,11 @@ Additionally there should some functionality to support
 
 
 ###Input and output files
-The input file is only visible to the scanner.
-The only output file, the resulting .tex tile,
-is also handled by the scanner, which, upon
-termination sends the result to a `create_outfile`
-function
+The input file is read on program start
+and the scanner is called with the contents as-is.
+Upon successful termination, the scanner returns
+the new content, which then will be written to
+a new file.
 
 
 ###Side note on logging
@@ -122,37 +125,26 @@ Let's list the cases:
 method until one returns true.
 
 When a handler wants a line, there are new scenarios:  
-* The handler.endtoken is None: line to write = handler.handle().output()
-* handler.endtoken is something: Initiate CAPTUREMODE.
-  * This means only check for ENDTOKEN at each iteration of lines
-  * When ENDTOKEN is found on it's own line, call handler.handle()
-    and proceed.
+* The `handler.multiline` is `False`: line to write = `handler.handle(line).output()`
+* `handler.multiline` is `True`: Set `capture` to `True`.
+  - Each line from hereon is temporarily saved with calling `capture(line)`
+  * Line starts with `handler.endtoken` : lines to write = `handler.handle(releaseCaptured()).output()`
+  * Line does not start with `handler.endtoken` : `capture(line)`
 
 
 The solution may be to have helper methods for many of the little
 things that happens in the scanner.
 
 
-
-Idea sprung to mind: what if the handlers took care of capturing?
-The scanner would still need to check for CAPTUREMODE at each line,
-and call handle on every line till the handler said stop
-This means there must be one more function in each handler, so this
-is maybe not a good idea. So far, it doesn't take out any complexity
-from the scanner, which was the point.
-
-
-
-
-# HELLO ABOUT THE SHOW HANDLER
-the show handler captures, evaluates, and if
-supposed to hide, just doesn't return output
-sjenuiaaalt.
-
+**Note** about prepro code that wraps other prepro code
+(like the `%@show` directive):  
+Always when a multiline capture is handled and returned,
+the scanner will call itself to process eventual code that
+remains. This allows infinite levels of nesting.
 
 # Hello about wrapping handler output in latex
 The output method can take a wrapper function
 that wraps stuff. This requires the scanner to
 know something about what it has processed, which
-is I don't want. Come back to this laetar.
-Oh, yes, the output def's can have a default handler
+is I don't want. Come back to this laetar.  
+Laetar: Oh, yes, the output def's can have a default handler
