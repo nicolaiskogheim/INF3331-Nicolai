@@ -1,5 +1,5 @@
 import subprocess
-from prepro import Helper
+from PreTeX.prepro import Helper
 
 class TestHelper:
       def test_extract_extracts(self):
