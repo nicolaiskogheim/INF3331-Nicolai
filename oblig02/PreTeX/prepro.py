@@ -46,13 +46,18 @@ class Handler(object):
     def handle(*args, **kwargs):
         raise NotImplementedError("Should have implemented handle method!")
 
-    def output(*args, **kwargs):
-        raise NotImplementedError("Should have implemented output method!")
+    def output(self, wrapper="default"):
+        if wrapper == "default":
+            return self.defaultWrapper(self.result)
+        elif wrapper:
+            return wrapper(self.result)
+        else:
+            return self.result
 
 class Import(Handler):
-
     endToken = None
     multiline = endToken != None
+    defaultWrapper = Latex().fancyverb
     pattern = re.compile(r'^import ([^\s]*) (.*)$')
     action = "Imorted"
 
@@ -66,15 +71,10 @@ class Import(Handler):
 
         self.result = Helper().extract(file_contents, self.regex)
 
-    def output(self, wrapper=Latex().fancyverb):
-        if wrapper:
-            return wrapper(self.result)
-        else:
-            return self.result
-
 class InlineImport(Handler):
     endToken = "%@"
     multiline = endToken != None
+    defaultWrapper = Latex().fancyverb
     pattern = re.compile(r'^import\s*$')
     action = "Wrapped inline code"
 
@@ -82,15 +82,10 @@ class InlineImport(Handler):
         _, content = input.split("\n", 1)
         self.result = content
 
-    def output(self, wrapper=Latex().fancyverb):
-        if wrapper:
-            return wrapper(self.result)
-        else:
-            return self.result
-
 class Exec(Handler):
     endToken = None
     multiline = endToken != None
+    defaultWrapper = Latex().terminal
     pattern = re.compile(r'^exec ([^\s]+) (.*)$')
     action = "Executed"
 
@@ -104,15 +99,10 @@ class Exec(Handler):
 
         self.result = "$ " + command + " " + args + "\n" + execution_result
 
-    def output(self, wrapper=Latex().terminal):
-        if wrapper:
-            return wrapper(self.result)
-        else:
-            return self.result
-
 class FakeInlineExec(Handler):
     endToken = "%@"
     multiline = endToken != None
+    defaultWrapper = Latex().terminal
     pattern = re.compile(r'^exec\s*$')
     action = "Wrapped inline execution"
 
@@ -120,54 +110,37 @@ class FakeInlineExec(Handler):
         _, content = input.split("\n", 1)
         self.result = content
 
-    def output(self, wrapper=Latex().terminal):
-        if wrapper:
-            return wrapper(self.result)
-        else:
-            return self.result
-
 class Verb(Handler):
+    endToken = "%@"
+    multiline = endToken != None
+    defaultWrapper = Latex().verbatim
+    pattern = re.compile(r'^verb$')
+    action = "Wrapped in verbatim block"
 
-      endToken = "%@"
-      multiline = endToken != None
-      pattern = re.compile(r'^verb$')
-      action = "Wrapped in verbatim block"
-
-      def handle(self, input):
-          _, content = input.split("\n", 1)
-          self.result = content
-
-      def output(self, wrapper=Latex().verbatim):
-          if wrapper:
-              return wrapper(self.result)
-          else:
-              return self.result
+    def handle(self, input):
+        _, content = input.split("\n", 1)
+        self.result = content
 
 class InlineShellCmd(Handler):
+    endToken="%@"
+    multiline = endToken != None
+    defaultWrapper = Latex().terminal
+    pattern = re.compile(r'^(python|bash) .*$')
+    action = "Ran inline code in shell"
+    # Maybe format action message based on input to wants
 
-      endToken="%@"
-      multiline = endToken != None
-      pattern = re.compile(r'^(python|bash) .*$')
-      action = "Ran inline code in shell"
-      # Maybe format action message based on input to wants
+    def handle(self, input):
+        firstLine, code = input.split("\n",1)
+        command, fakeargs = firstLine.split(" ", 1)
 
-      def handle(self, input):
-          firstLine, code = input.split("\n",1)
-          command, fakeargs = firstLine.split(" ", 1)
+        executed, err = Helper().execute([command,'-c',"""\n{0}""".format(code)])
 
-          executed, err = Helper().execute([command,'-c',"""\n{0}""".format(code)])
-
-          self.result = "\n".join([firstLine, executed]).rstrip("\n")
-
-      def output(self, wrapper=Latex().terminal):
-          if wrapper:
-              return wrapper(self.result)
-          else:
-              return self.result
+        self.result = "\n".join([firstLine, executed]).rstrip("\n")
 
 class Var(Handler):
     endToken = None
     multiline = endToken != None
+    defaultWrapper = None
     pattern = re.compile(r'^var\s([A-Za-z0-9_:.-]+)\s*=\s*([A-Za-z0-9_:.-]+)$')
     action = "Assigned to variable"
 
@@ -176,13 +149,12 @@ class Var(Handler):
         key, value = m.group(1), m.group(2)
 
         State.setVar(key,value)
-
-    def output(self):
-        return ""
+        self.result = ""
 
 class ShowHide(Handler):
     endToken = "%@fi"
     multiline = endToken != None
+    defaultWrapper = None
     pattern = re.compile(r'^(show|hide)\s([A-Za-z0-9_:.-]+)\s*==\s*([A-Za-z0-9_:.-]+)$')
     action = "Controlled visibility"
 
@@ -194,24 +166,20 @@ class ShowHide(Handler):
         show = True if visibility == "show" else False
 
         if show:
-          if State.getVar(key) == value:
-              self.result = block
-          else:
-              self.result = ""
+            if State.getVar(key) == value:
+                self.result = block
+            else:
+                self.result = ""
         else:
-          if State.getVar(key) == value:
-              self.result = ""
-          else:
-              self.result = block
-
-    ## Er det riktig med wrapper paa output?
-
-    def output(self, wrapper=None):
-        return self.result
+            if State.getVar(key) == value:
+                self.result = ""
+            else:
+                self.result = block
 
 class PreproIncluded(Handler):
     endToken = None
     multiline = endToken != None
+    defaultWrapper = None
     pattern = re.compile(r'include{([a-zA-Z_\-0-9\.][A-Za-z_\-\s0-9\.\/\\]*?)?([A-Za-z_\-\s0-9\.]+)(\.[a-zA-Z]+)}')
     action = "Preprocessed latex-included files"
 
@@ -241,25 +209,18 @@ class PreproIncluded(Handler):
         # newPath = os.path.join(include_folder, path)
         self.result = "\\include{"+ targetPath +"}"
 
-    def output(self, wrapper=None):
-        # Never use wrapper here
-        return self.result
-
 class BadInput(Handler):
+    endToken = None
+    multiline = endToken != None
+    defaultWrapper = None
+    pattern = re.compile(r'.*')
+    action = "Errored"
 
-      endToken = None
-      multiline = endToken != None
-      pattern = re.compile(r'.*')
-      action = "Errored"
-
-      def handle(self, input):
-          if input:
-              self.result = "% Preprocessor: did not understand %@{0}".format(input)
-          else:
-              self.result = "% Preprocessor: found stray closing tag %@"
-
-      def output(self):
-          return self.result
+    def handle(self, input):
+        if input:
+            self.result = "% Preprocessor: did not understand %@{0}".format(input)
+        else:
+            self.result = "% Preprocessor: found stray closing tag %@"
 
 class Scanner:
 
@@ -310,7 +271,7 @@ class Scanner:
 
         #Add  line number map if not recursincg
         if startLine == 0:
-          newfile += self.getLineNumberMap()
+            newfile += self.getLineNumberMap()
 
         # maybe strip out all line numbers if no errors
 
@@ -332,25 +293,25 @@ class Scanner:
                "%[{0}]".format(",".join(self.lnrmap))
 
 class Helper:
-  def extract(self, content, regex):
-      result = re.search(regex, content, re.M)
-      if result:
-          return result.group(0)
-      else:
-          return ""
+    def extract(self, content, regex):
+        result = re.search(regex, content, re.M)
+        if result:
+            return result.group(0)
+        else:
+            return ""
 
-  def execute(self, command):
-      legalCommands = ["python"]
-      # if command not in legalCommands:
-      #     msg = "The command {0} is not in the list of allowed commands"
-      #     msg += "Feel free to add it in if you want"
-      #     msg = msg.format(command)
-      #     raise Exception(msg)
-      # else:
-      if True:
-          process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-          result, err = process.communicate()
-          return str(result), str(err)
+    def execute(self, command):
+        legalCommands = ["python"]
+        # if command not in legalCommands:
+        #     msg = "The command {0} is not in the list of allowed commands"
+        #     msg += "Feel free to add it in if you want"
+        #     msg = msg.format(command)
+        #     raise Exception(msg)
+        # else:
+        if True:
+            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            result, err = process.communicate()
+            return str(result), str(err)
 
 class FileHelper:
 
