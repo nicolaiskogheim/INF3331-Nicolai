@@ -48,7 +48,10 @@ class Handler(object):
 
     def output(self, wrapper="default"):
         if wrapper == "default":
-            return self.defaultWrapper(self.result)
+            if self.defaultWrapper:
+                return self.defaultWrapper(self.result)
+            else:
+                return self.result
         elif wrapper:
             return wrapper(self.result)
         else:
