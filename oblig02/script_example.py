@@ -27,7 +27,7 @@ Example
 if __name__=="__main__":
     import sys
     if len(sys.argv)>1:
-        print(factorial(int(sys.argv[1])))
+        print factorial(int(sys.argv[1]))
 
     import doctest
     doctest.testmod()

@@ -59,7 +59,7 @@ class TestGenerateTree:
     calculated_max_folder_count = calculate_tree_size(width, depth)
     actual_folder_count = subfolder_count(root_folder)
 
-    print("->", actual_folder_count, "folders")
+    print "->", actual_folder_count, "folders"
     assert actual_folder_count == expected, msg1.format(expected, actual_folder_count)
     assert actual_folder_count <= calculated_max_folder_count, msg2.format(calculated_max_folder_count, actual_folder_count)
 

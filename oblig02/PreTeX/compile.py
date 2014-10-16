@@ -34,12 +34,12 @@ def compile_latex(source, inter=False):
         out = out.split("\n")
         output += "\n".join(out[len(out) - 3:])
 
-        print("Output:")
-        print(output)
+        print "Output:"
+        print output
 
         if err:
-            print("\n\n")
-            print(err)
+            print "\n\n"
+            print err
 
 def getLnrMap(path):
     mapPattern = re.compile(r'%\[((?:\d+:\d+,)*(?:\d+:\d+))\]')
@@ -48,8 +48,8 @@ def getLnrMap(path):
 
     match = mapPattern.match(lastLine)
     if not match:
-        print("Error: input file not properly formatted.")
-        print("\tPlease run it through the preprocessor again.")
+        print "Error: input file not properly formatted."
+        print "\tPlease run it through the preprocessor again."
         raise Exception
     else:
         lnrMap = match.group(1).split(",")

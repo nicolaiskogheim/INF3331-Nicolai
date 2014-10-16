@@ -62,7 +62,7 @@ class GFT:
 
   def debug(self, msg, color=white):
     if self.config["verbose"]:
-      print("\033["+color+"m"+msg+"\033[0m")
+      print "\033["+color+"m"+msg+"\033[0m"
 
 
 

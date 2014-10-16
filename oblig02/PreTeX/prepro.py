@@ -40,7 +40,7 @@ class Handler(object):
     def wants(self, input):
         acceptsLine = True if self.pattern.match(input) else False
         if acceptsLine:
-            print(self.__class__.__name__ + " takes care of: " + input)
+            print self.__class__.__name__ + " takes care of: " + input
         return acceptsLine
 
     def handle(*args, **kwargs):
@@ -190,8 +190,8 @@ class PreproIncluded(Handler):
 
         if not os.path.exists(originalFile):
             self.result = "" #"\\include{"+ originalFile +"}"
-            print("Error: '{0}' is not a file!".format(originalFile))
-            print("It will not be included in the resulting .tex file.")
+            print "Error: '{0}' is not a file!".format(originalFile)
+            print "It will not be included in the resulting .tex file."
             return
 
         #if ext not "xtex": warn("Extension not xtex in {0}".format(fpath+ext))
