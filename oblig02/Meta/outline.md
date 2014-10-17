@@ -33,10 +33,10 @@ TOC:
   - [ ] Scanner
   - [ ] main
   * ***helper.py***
-  - [ ] extract
-  - [ ] execute
-  - [ ] load
-  - [ ] write
+  - [x] extract
+  - [x] execute
+  - [x] load
+  - [x] write
   * ***compile.py***
   - [x] compile_latex
   - [x] parse_output
