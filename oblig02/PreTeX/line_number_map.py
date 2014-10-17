@@ -1,4 +1,5 @@
 import logging
+import helper
 import re
 rawmap = []
 realmap = {}
@@ -15,7 +16,7 @@ def getEncoded():
 def getDecoded(path):
     global realmap
     if not path in realmap:
-        helper.load(path).rstrip().split("\n")[-1]
+        lastLine = helper.load(path).rstrip().split("\n")[-1]
 
         mapPattern = re.compile(r'%\[((?:\d+:\d+,)*(?:\d+:\d+))\]')
         match = mapPattern.match(lastLine)
