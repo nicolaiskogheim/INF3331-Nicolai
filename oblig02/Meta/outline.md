@@ -38,7 +38,8 @@ TOC:
   - [ ] load
   - [ ] write
   * ***compile.py***
-  - [ ] compile_latex
+  - [x] compile_latex
+  - [x] parse_output
   - [ ] main
   * ***line_number_map.py***
   - [ ] addPair
