@@ -42,10 +42,10 @@ TOC:
   - [x] parse_output
   - [ ] main
   * ***line_number_map.py***
-  - [ ] addPair
-  - [ ] getEncoded
-  - [ ] getDecoded
-  - [ ] getLineNumber
+  - [x] addPair
+  - [x] getEncoded
+  - [x] getDecoded
+  - [x] getLineNumber
   * ***latex***
   - [ ] mode
   - [ ] verbatim
