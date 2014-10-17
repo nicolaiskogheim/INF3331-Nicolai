@@ -1,3 +1,4 @@
+from textwrap import dedent
 simple=False
 
 def mode(func):
@@ -16,22 +17,26 @@ def verbatim(s, content):
 
 @mode
 def terminal(s, content):
-    before="""\\begin{Verbatim}[numbers=none,frame=lines,label=\\fbox{{\\tiny Terminal}},fontsize=\\fontsize{9pt}{9pt},
-labelposition=topline,framesep=2.5mm,framerule=0.7pt]"""
-    after="""\\end{Verbatim}
-\\noindent
-"""
+    before = dedent("""\
+        \\begin{Verbatim}[numbers=none,frame=lines,label=\\fbox{{\\tiny Terminal}},fontsize=\\fontsize{9pt}{9pt},
+        labelposition=topline,framesep=2.5mm,framerule=0.7pt]""")
+    after=dedent("""\
+        \\end{Verbatim}
+        \\noindent
+        """)
 
     return "\n".join([before, content, after])
 @mode
 def fancyverb(s, content):
-    before="""\\begin{shadedquoteBlueBar}
-\\fontsize{9pt}{9pt}
-\\begin{Verbatim}"""
-    after="""\\end{Verbatim}
-\\end{shadedquoteBlueBar}
-\\noindent
-"""
+    before=dedent("""\
+        \\begin{shadedquoteBlueBar}
+        \\fontsize{9pt}{9pt}
+        \\begin{Verbatim}""")
+    after=dedent("""\
+        \\end{Verbatim}
+        \\end{shadedquoteBlueBar}
+        \\noindent
+        """)
 
     return "\n".join([before, content, after])
 
