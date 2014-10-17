@@ -47,10 +47,10 @@ TOC:
   - [x] getDecoded
   - [x] getLineNumber
   * ***latex***
-  - [ ] mode
-  - [ ] verbatim
-  - [ ] terminal
-  - [ ] fancyverb
+  - [x] mode
+  - [x] verbatim
+  - [x] terminal
+  - [x] fancyverb
 - [ ] Oppgave 13: Rapport
 
 ###Notes
