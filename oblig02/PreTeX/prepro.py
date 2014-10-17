@@ -4,7 +4,6 @@ import logging
 import os
 import re
 import subprocess
-import StringIO
 from latex import Latex
 
 class State:
