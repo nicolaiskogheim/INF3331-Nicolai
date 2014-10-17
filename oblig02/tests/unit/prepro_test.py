@@ -2,7 +2,8 @@ import pytest
 import os.path
 import tempfile
 from shutil import rmtree
-from PreTeX.prepro import Scanner, Handler, Handlers, FileHelper, Helper, Import, Exec, Verb
+from PreTeX.prepro import Scanner, Handler, Handlers, Import, Exec, Verb
+from PreTeX import helper
 
 
 class TestScanner:
@@ -40,8 +41,8 @@ class TestImportHandler:
               pass
           def filehelpermock(*args):
               pass
-          monkeypatch.setattr(Helper, 'extract', extractmock)
-          monkeypatch.setattr(FileHelper, 'load', filehelpermock)
+          monkeypatch.setattr(helper, 'extract', extractmock)
+          monkeypatch.setattr(helper, 'load', filehelpermock)
 
           fakepath = "faketest.py"
           fakeregex = "(^some [arbitraty] regex)"
@@ -61,14 +62,14 @@ class TestImportHandler:
 
           def FileHelperMock(*args):
               return "\t\tthat\n\t\tthis not\n\t\tthis"
-          def extractMock(self, content, regex):
+          def extractMock(content, regex):
               if content not in "\t\tthat\n\t\tthis not\n\t\tthis" \
               or regex not in "(\t*this$)":
                 raise AssertionError
               return "\t\tthis"
 
-          monkeypatch.setattr(FileHelper, 'load', FileHelperMock)
-          monkeypatch.setattr(Helper, 'extract', extractMock)
+          monkeypatch.setattr(helper, 'load', FileHelperMock)
+          monkeypatch.setattr(helper, 'extract', extractMock)
           x = Import()
           x.handle(handlerInput)
 
@@ -94,7 +95,7 @@ class TestExecHandler:
       def test_exec_handler_executes_code(self, monkeypatch):
           def execmock(*args):
               return "24.0", ""
-          monkeypatch.setattr(Helper, 'execute', execmock)
+          monkeypatch.setattr(helper, 'execute', execmock)
 
           handlerInput = "exec python script_example.py 4"
           handler = Exec()

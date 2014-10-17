@@ -1,6 +1,6 @@
 import os
 import tempfile
-from PreTeX.prepro import FileHelper
+from PreTeX import helper
 
 def setup_module(module):
     tmpdir = tempfile.mkdtemp()
@@ -14,7 +14,7 @@ class TestFileHelper:
         file.write(file_contents)
         file.close()
 
-        result = FileHelper().load(file_name)
+        result = helper.load(file_name)
 
         assert result == file_contents
 
@@ -22,7 +22,7 @@ class TestFileHelper:
         file_name = 'testefil2'
         file_contents = 'tekst'
 
-        FileHelper().write(file_name,file_contents)
+        helper.write(file_name,file_contents)
 
         with open(file_name, 'r') as f:
             read_contents = f.read()

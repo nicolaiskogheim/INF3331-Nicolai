@@ -1,10 +1,10 @@
 import argparse
+import helper
 import inspect
 import logging
 import line_number_map
-import os
+from os import path
 import re
-import subprocess
 import latex
 
 class State:
@@ -71,9 +71,9 @@ class Import(Handler):
         self.script_name = result.group(1)
         self.regex = result.group(2)
 
-        file_contents = FileHelper().load(self.script_name)
+        file_contents = helper.load(self.script_name)
 
-        self.result = Helper().extract(file_contents, self.regex)
+        self.result =helper.extract(file_contents, self.regex)
 
 class InlineImport(Handler):
     endToken = "%@"
@@ -99,7 +99,7 @@ class Exec(Handler):
         command = result.group(1)
         args = result.group(2)
 
-        execution_result, err = Helper().execute("{0} {1}".format(command, args).split(" "))
+        execution_result, err =helper.execute("{0} {1}".format(command, args).split(" "))
 
         self.result = "$ " + command + " " + args + "\n" + execution_result
 
@@ -137,7 +137,7 @@ class InlineShellCmd(Handler):
         firstLine, code = input.split("\n",1)
         command, fakeargs = firstLine.split(" ", 1)
 
-        executed, err = Helper().execute([command,'-c',"""\n{0}""".format(code)])
+        executed, err =helper.execute([command,'-c',"""\n{0}""".format(code)])
 
         self.result = "\n".join([firstLine, executed]).rstrip("\n")
 
@@ -190,9 +190,9 @@ class PreproIncluded(Handler):
     def handle(self, input):
         m = self.pattern.match(input)
         fpath, fname,  ext = m.group(1), m.group(2), m.group(3)
-        originalFile = os.path.join(fpath, fname + ext)
+        originalFile = path.join(fpath, fname + ext)
 
-        if not os.path.exists(originalFile):
+        if not path.exists(originalFile):
             self.result = "" #"\\include{"+ originalFile +"}"
             logging.warn("'{0}' is not a file!".format(originalFile))
             logging.warn("It will not be included in the resulting .tex file.")
@@ -200,17 +200,17 @@ class PreproIncluded(Handler):
 
         #if ext not "xtex": warn("Extension not xtex in {0}".format(fpath+ext))
         include_folder = "./preprocessed_tex_files_to_include"
-        if not os.path.exists(include_folder):
+        if not path.exists(include_folder):
             os.makedirs(include_folder)
 
-        targetPath = os.path.join(include_folder,fpath, fname)
+        targetPath = path.join(include_folder,fpath, fname)
 
         thisScript = inspect.stack()[0][1]
-        result, err = Helper().execute(["python",thisScript, originalFile, targetPath+".tex"])
+        result, err =helper.execute(["python",thisScript, originalFile, targetPath+".tex"])
 
 
         # if err: out err
-        # newPath = os.path.join(include_folder, path)
+        # newPath = path.join(include_folder, path)
         self.result = "\\include{"+ targetPath +"}"
 
 class BadInput(Handler):
@@ -290,43 +290,6 @@ class Scanner:
         self.captured = ""
         return x
 
-class Helper:
-    def extract(self, content, regex):
-        result = re.search(regex, content, re.M)
-        if result:
-            return result.group(0)
-        else:
-            return ""
-
-    def execute(self, command):
-        legalCommands = ["python"]
-        # if command not in legalCommands:
-        #     msg = "The command {0} is not in the list of allowed commands"
-        #     msg += "Feel free to add it in if you want"
-        #     msg = msg.format(command)
-        #     raise Exception(msg)
-        # else:
-        if True:
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            result, err = process.communicate()
-            return str(result), str(err)
-
-class FileHelper:
-
-    def load(self, path):
-        with open(path, 'r') as f:
-            file_contents = f.read()
-        return file_contents
-
-    def write(self, path, content):
-        dirPath = os.path.dirname(path)
-
-        if not os.path.exists(dirPath) and dirPath != '':
-            os.makedirs(dirPath)
-        with open(path, 'w') as f:
-            f.write(content)
-        return content
-
 if __name__=="__main__":
 
     parser = argparse.ArgumentParser()
@@ -352,9 +315,9 @@ if __name__=="__main__":
     if args.simple:
         latex.configure(simpleMode=True)
 
-    sourcefile = FileHelper().load(args.source)
+    sourcefile = helper.load(args.source)
     output = Scanner().scan(sourcefile)
-    FileHelper().write(args.destination, output)
+    helper.write(args.destination, output)
 
     # import doctest
     # doctest.testmod()

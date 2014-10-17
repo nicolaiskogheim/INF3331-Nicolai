@@ -1,12 +1,12 @@
 import subprocess
-from PreTeX.prepro import Helper
+from PreTeX import helper
 
 class TestHelper:
       def test_extract_extracts(self):
           content = "This is a test. I'm not a sk8er boi."
           regex = "sk[1-9][aeoir]{2} [\w]*\.$"
 
-          result = Helper().extract(content, regex)
+          result = helper.extract(content, regex)
 
           assert result == "sk8er boi."
 
@@ -14,7 +14,7 @@ class TestHelper:
           content = "Hello. This is a test."
           regex = "I will not match nothin'"
 
-          result = Helper().extract(content, regex)
+          result = helper.extract(content, regex)
 
           assert result == ""
 
@@ -30,6 +30,6 @@ class TestHelper:
           command = "python"
           args = "dummy.py 3"
 
-          result = Helper().execute([command, args])
+          result = helper.execute([command, args])
 
           assert result[0] == "24.0"
