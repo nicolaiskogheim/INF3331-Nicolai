@@ -45,8 +45,7 @@ def compile_latex(source, interactive=False):
     if err:
         logging.error(err)
 
-    return out # elelr noe
-
+    return out
 
 
 if __name__ == "__main__":
