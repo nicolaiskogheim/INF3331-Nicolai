@@ -16,6 +16,37 @@ TOC:
 - [x] Oppgave 10: Linjenummerering
 - [x] Oppgave 11: Front-end til preprosessor
 - [ ] Oppgave 12: Testing og dokumentasjon
+  * ***prepro.py***
+  - [ ] State
+  - [ ] Handlers
+  - [ ] Handler
+  - [ ] Import
+  - [ ] InlineImport
+  - [ ] Exec
+  - [ ] FakeInlineExec
+  - [ ] Verb
+  - [ ] InlineShellCmd
+  - [ ] Var
+  - [ ] ShowHide
+  - [ ] PreproIncluded
+  - [ ] BadInput
+  - [ ] Scanner
+  - [ ] Helper
+  - [ ] FileHelper
+  - [ ] main
+  * ***compile.py***
+  - [ ] compile_latex
+  - [ ] main
+  * ***line_number_map.py***
+  - [ ] addPair
+  - [ ] getEncoded
+  - [ ] getDecoded
+  - [ ] getLineNumber
+  * ***latex***
+  - [ ] mode
+  - [ ] verbatim
+  - [ ] terminal
+  - [ ] fancyverb
 - [ ] Oppgave 13: Rapport
 
 ###Notes
