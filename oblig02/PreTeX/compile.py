@@ -1,5 +1,6 @@
 import argparse
 import logging
+import line_number_map
 import re
 import subprocess
 
@@ -19,16 +20,12 @@ def compile_latex(source, inter=False):
         error_lines_pattern = re.compile(r'(..?\/[\w/.]+(?:\n[\w/.]+)?):([\d]+(?:\n[\d]+)?):(.*(?:\n.*)?)')
         output = ""
 
-        lnrs = {} #Map with lnr-maps
         for line in error_lines_pattern.finditer(out):
             path = line.group(1).replace("\n", "")
             lnr  = line.group(2).replace("\n", "")
             msg  = line.group(3).replace("\n", "")
 
-            if not path in lnrs:
-                lnrs[path] = getLnrMap(path)
-
-            lnr = getRealLnr(lnr, lnrs[path])
+            lnr = line_number_map.getLineNumber(lnr, path)
             output += "{0}:{1}:{2}\n".format(path, lnr, msg)
 
         # Append last two lines of output from pdflatex
@@ -39,37 +36,6 @@ def compile_latex(source, inter=False):
 
         if err:
             logging.error(err)
-
-def getLnrMap(path):
-    mapPattern = re.compile(r'%\[((?:\d+:\d+,)*(?:\d+:\d+))\]')
-    with open(path, 'r') as f:
-        lastLine = f.read().rstrip().split("\n")[-1]
-
-    match = mapPattern.match(lastLine)
-    if not match:
-        logging.error("Input file not properly formatted.")
-        logging.error("\tPlease run it through the preprocessor again.")
-        logging.error("This means that the linenumbers will point to")
-        logging.error("the preprocessed file rather than the unprocessed one.")
-        lnrMap = None
-    else:
-        lnrMap = match.group(1).split(",")
-
-        return lnrMap
-
-def getRealLnr(lnr, lnrMap):
-    lnr = int(lnr)
-
-    if not lnrMap:
-      return lnr
-
-    lastLnr = 0
-    for m in lnrMap:
-      orig, new = m.split(":")
-      if lnr < int(new):
-        return lastLnr
-      else:
-        lastLnr = orig
 
 
 if __name__ == "__main__":

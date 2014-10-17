@@ -1,6 +1,7 @@
 import argparse
 import inspect
 import logging
+import line_number_map
 import os
 import re
 import subprocess
@@ -243,7 +244,7 @@ class Scanner:
                     self.handler.handle(self.release())
                     scanForNestedBlocks = Scanner().scan(self.handler.output(), token=token, startLine=i)
                     newfile += scanForNestedBlocks + "\n"
-                    self.addLineNumberMap(i+1+startLine, 1+len(newfile.split('\n')) -1)
+                    line_number_map.addPair(i+1+startLine, len(newfile.split('\n')) + startLine)
 
                     continue
                 else:
@@ -266,7 +267,8 @@ class Scanner:
                     pass
             else:
                 newfile += line + "\n"
-                self.addLineNumberMap(1+i, len(newfile.split('\n')) -1)
+                line_number_map.addPair(1+i+startLine,
+                                        len(newfile.split('\n')) -1 + startLine)
 
 
         #Strip last newline and or trailing whitespace
@@ -274,7 +276,7 @@ class Scanner:
 
         #Add  line number map if not recursincg
         if startLine == 0:
-            newfile += self.getLineNumberMap()
+            newfile += line_number_map.getEncoded()
 
         # maybe strip out all line numbers if no errors
 
@@ -287,13 +289,6 @@ class Scanner:
         x = self.captured.rstrip("\n")
         self.captured = ""
         return x
-
-    def addLineNumberMap(self, origLnr, newLnr):
-        self.lnrmap.append("{0}:{1}".format(origLnr, newLnr))
-
-    def getLineNumberMap(self):
-        return "\n\n%PreTex data. Ignore following line.\n"+\
-               "%[{0}]".format(",".join(self.lnrmap))
 
 class Helper:
     def extract(self, content, regex):
