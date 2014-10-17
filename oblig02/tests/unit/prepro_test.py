@@ -16,7 +16,7 @@ class TestScanner:
         # Assert that the result begins with `text`
         # This is because the scanner adds a line number map
         # at the bottom
-        assert result.find(text) == 0
+        assert result.startswith(text) == True
 
 
 class TestImportHandler:
