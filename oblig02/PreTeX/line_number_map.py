@@ -15,8 +15,7 @@ def getEncoded():
 def getDecoded(path):
     global realmap
     if not path in realmap:
-        with open(path, 'r') as f:
-            lastLine = f.read().rstrip().split("\n")[-1]
+        helper.load(path).rstrip().split("\n")[-1]
 
         mapPattern = re.compile(r'%\[((?:\d+:\d+,)*(?:\d+:\d+))\]')
         match = mapPattern.match(lastLine)
