@@ -3,7 +3,7 @@ python:
   - "2.6"
   - "2.7"
 
-script: py.test
+script: "py.test --cov oblig02/PreTeX/"
 
 notifications:
   email:
