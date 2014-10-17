@@ -31,9 +31,12 @@ TOC:
   - [ ] PreproIncluded
   - [ ] BadInput
   - [ ] Scanner
-  - [ ] Helper
-  - [ ] FileHelper
   - [ ] main
+  * ***helper.py***
+  - [ ] extract
+  - [ ] execute
+  - [ ] load
+  - [ ] write
   * ***compile.py***
   - [ ] compile_latex
   - [ ] main
