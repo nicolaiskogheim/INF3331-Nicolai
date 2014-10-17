@@ -4,7 +4,7 @@ import logging
 import os
 import re
 import subprocess
-from latex import Latex
+import latex
 
 class State:
     variables = {}
@@ -60,7 +60,7 @@ class Handler(object):
 class Import(Handler):
     endToken = None
     multiline = endToken != None
-    defaultWrapper = Latex().fancyverb
+    defaultWrapper = latex.fancyverb
     pattern = re.compile(r'^import ([^\s]*) (.*)$')
     action = "Imorted"
 
@@ -77,7 +77,7 @@ class Import(Handler):
 class InlineImport(Handler):
     endToken = "%@"
     multiline = endToken != None
-    defaultWrapper = Latex().fancyverb
+    defaultWrapper = latex.fancyverb
     pattern = re.compile(r'^import\s*$')
     action = "Wrapped inline code"
 
@@ -88,7 +88,7 @@ class InlineImport(Handler):
 class Exec(Handler):
     endToken = None
     multiline = endToken != None
-    defaultWrapper = Latex().terminal
+    defaultWrapper = latex.terminal
     pattern = re.compile(r'^exec ([^\s]+) (.*)$')
     action = "Executed"
 
@@ -105,7 +105,7 @@ class Exec(Handler):
 class FakeInlineExec(Handler):
     endToken = "%@"
     multiline = endToken != None
-    defaultWrapper = Latex().terminal
+    defaultWrapper = latex.terminal
     pattern = re.compile(r'^exec\s*$')
     action = "Wrapped inline execution"
 
@@ -116,7 +116,7 @@ class FakeInlineExec(Handler):
 class Verb(Handler):
     endToken = "%@"
     multiline = endToken != None
-    defaultWrapper = Latex().verbatim
+    defaultWrapper = latex.verbatim
     pattern = re.compile(r'^verb$')
     action = "Wrapped in verbatim block"
 
@@ -127,7 +127,7 @@ class Verb(Handler):
 class InlineShellCmd(Handler):
     endToken="%@"
     multiline = endToken != None
-    defaultWrapper = Latex().terminal
+    defaultWrapper = latex.terminal
     pattern = re.compile(r'^(python|bash) .*$')
     action = "Ran inline code in shell"
     # Maybe format action message based on input to wants
@@ -342,6 +342,9 @@ if __name__=="__main__":
                         help="Be verbose about what is going on")
     group.add_argument("-q", "--quiet", action="store_true", default=False,
                         help="Suppress normal output. Returns >0 on error, 0 otherwise.")
+    parser.add_argument("-s", "--simple", action="store_true", default=False,
+                        help="Keeps formatting to a minimum, using only the standard"+\
+                        " verbatim latex environment.")
     args = parser.parse_args()
 
     if args.verbose:
@@ -350,6 +353,9 @@ if __name__=="__main__":
         logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.CRITICAL)
     else:
         logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.WARNING)
+
+    if args.simple:
+        latex.configure(simpleMode=True)
 
     sourcefile = FileHelper().load(args.source)
     output = Scanner().scan(sourcefile)

@@ -1,27 +1,41 @@
-class Latex(object):
+simple=False
 
-      def verbatim(self, content):
-          before="\\begin{Verbatim}"
-          after="\\end{Verbatim}\n"
+def mode(func):
+    def inner(*args, **kwargs):
+        if simple:
+            return verbatim(*args, **kwargs)
+        else:
+            return func(*args, **kwargs)
+    return inner
 
-          return "\n".join([before, content, after])
+def verbatim(s, content):
+    before="\\begin{Verbatim}"
+    after="\\end{Verbatim}\n"
 
-      def terminal(self, content):
-          before="""\\begin{Verbatim}[numbers=none,frame=lines,label=\\fbox{{\\tiny Terminal}},fontsize=\\fontsize{9pt}{9pt},
+    return "\n".join([before, content, after])
+
+@mode
+def terminal(s, content):
+    before="""\\begin{Verbatim}[numbers=none,frame=lines,label=\\fbox{{\\tiny Terminal}},fontsize=\\fontsize{9pt}{9pt},
 labelposition=topline,framesep=2.5mm,framerule=0.7pt]"""
-          after="""\\end{Verbatim}
+    after="""\\end{Verbatim}
 \\noindent
 """
 
-          return "\n".join([before, content, after])
-
-      def fancyverb(self, content):
-          before="""\\begin{shadedquoteBlueBar}
+    return "\n".join([before, content, after])
+@mode
+def fancyverb(s, content):
+    before="""\\begin{shadedquoteBlueBar}
 \\fontsize{9pt}{9pt}
 \\begin{Verbatim}"""
-          after="""\\end{Verbatim}
+    after="""\\end{Verbatim}
 \\end{shadedquoteBlueBar}
 \\noindent
 """
 
-          return "\n".join([before, content, after])
+    return "\n".join([before, content, after])
+
+def configure(simpleMode=False):
+    global simple
+    if simpleMode:
+        simple = True
