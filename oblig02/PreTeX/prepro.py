@@ -3,7 +3,7 @@ import helper
 import inspect
 import logging
 import line_number_map
-from os import path
+from os import path, makedirs
 import re
 import latex
 
@@ -201,7 +201,7 @@ class PreproIncluded(Handler):
         #if ext not "xtex": warn("Extension not xtex in {0}".format(fpath+ext))
         include_folder = "./preprocessed_tex_files_to_include"
         if not path.exists(include_folder):
-            os.makedirs(include_folder)
+            makedirs(include_folder)
 
         targetPath = path.join(include_folder,fpath, fname)
 
