@@ -4,6 +4,27 @@ import line_number_map
 import re
 import subprocess
 
+def parse_output(unparsed):
+    error_lines_pattern = re.compile(r'(..?\/[\w/.]+(?:\n[\w/.]+)?):([\d]+(?:\n[\d]+)?):(.*(?:\n.*)?)')
+    parsed = ""
+
+    for line in error_lines_pattern.finditer(unparsed):
+        path = line.group(1).replace("\n", "")
+        lnr  = line.group(2).replace("\n", "")
+        msg  = line.group(3).replace("\n", " ")
+
+        origlnr = line_number_map.getLineNumber(lnr, path)
+        parsed += "{0}:{1}:{2}\n".format(path, origlnr, msg)
+
+    # Append last two lines of parsed from pdflatex
+    outLines = unparsed.split("\n")
+    parsed += "\n".join(outLines[len(outLines) - 3:])
+
+    logging.info("\n"+parsed)
+
+
+    return parsed
+
 def compile_latex(source, interactive=False):
     nonstopmode = not interactive
 
@@ -11,7 +32,7 @@ def compile_latex(source, interactive=False):
     args.append("pdflatex")
     args.append("-file-line-error")
     if nonstopmode:
-      args.append("-interaction=nonstopmode")
+        args.append("-interaction=nonstopmode")
     args.append(source)
 
     proc = subprocess.Popen(args,
@@ -21,26 +42,11 @@ def compile_latex(source, interactive=False):
                             stderr=subprocess.PIPE)
     out, err = proc.communicate()
 
-    if nonstopmode:
-        error_lines_pattern = re.compile(r'(..?\/[\w/.]+(?:\n[\w/.]+)?):([\d]+(?:\n[\d]+)?):(.*(?:\n.*)?)')
-        output = ""
-
-        for line in error_lines_pattern.finditer(out):
-            path = line.group(1).replace("\n", "")
-            lnr  = line.group(2).replace("\n", "")
-            msg  = line.group(3).replace("\n", "")
-
-            origlnr = line_number_map.getLineNumber(lnr, path)
-            output += "{0}:{1}:{2}\n".format(path, origlnr, msg)
-
-        # Append last two lines of output from pdflatex
-        outLines = out.split("\n")
-        output += "\n".join(outLines[len(outLines) - 3:])
-
-        logging.info("\n"+output)
-
     if err:
         logging.error(err)
+
+    return out # elelr noe
+
 
 
 if __name__ == "__main__":
@@ -74,4 +80,6 @@ if __name__ == "__main__":
                             level=logging.INFO)
 
 
-    compile_latex(args.source, args.interactive)
+    output = compile_latex(args.source, args.interactive)
+    if not args.interactive:
+        parse_output(output)
