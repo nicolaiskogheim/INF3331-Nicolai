@@ -206,7 +206,7 @@ class PreproIncluded(Handler):
         targetPath = path.join(include_folder,fpath, fname)
 
         thisScript = inspect.stack()[0][1]
-        result, err =helper.execute(["python",thisScript, originalFile, targetPath+".tex"])
+        result, err= helper.execute(["python",thisScript, originalFile, targetPath+".tex"])
 
 
         # if err: out err
