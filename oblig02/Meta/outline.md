@@ -17,16 +17,16 @@ TOC:
 - [x] Oppgave 11: Front-end til preprosessor
 - [ ] Oppgave 12: Testing og dokumentasjon
   * ***prepro.py***
-  - [ ] State
-  - [ ] Handlers
-  - [ ] Handler
+  - [x] State
+  - [x] Handlers
+  - [x] Handler
   - [x] Import
-  - [ ] InlineImport
+  - [x] InlineImport
   - [x] Exec
-  - [ ] FakeInlineExec
+  - [x] FakeInlineExec
   - [x] Verb
   - [x] InlineShellCmd
-  - [ ] Var
+  - [x] Var
   - [x] ShowHide
   - [x] PreproIncluded
   - [x] BadInput

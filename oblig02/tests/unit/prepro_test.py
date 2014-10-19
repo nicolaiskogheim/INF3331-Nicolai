@@ -2,7 +2,7 @@ import pytest
 import os
 import tempfile
 from shutil import rmtree
-from PreTeX.prepro import Scanner, Handler, Handlers, Import, Exec, Verb, InlineShellCmd, ShowHide, State, BadInput, PreproIncluded, Var
+from PreTeX.prepro import Scanner, Handler, Handlers, Import, InlineImport, Exec, FakeInlineExec, Verb, InlineShellCmd, ShowHide, State, BadInput, PreproIncluded, Var
 from PreTeX import helper
 
 
@@ -123,6 +123,57 @@ class TestVerbHandler:
           assert x == True
 
 class TestHandler:
+    def test_state(self):
+        State.setVar("foo", "bar")
+
+        assert State.getVar("foo") == "bar"
+        assert not State.getVar("baz")
+
+    def test_handler(self):
+        handler = Handler()
+
+        assert handler.wants
+
+        with pytest.raises(NotImplementedError):
+            handler.handle()
+
+        assert handler.output
+
+    def test_handlers(self):
+        handler_iterator = Handlers()
+
+        # test that handler iterator iterates over handlers,
+        # and only handlers
+        for handler in handler_iterator:
+            foundOne = True
+            assert handler.wants
+            assert handler.handle
+            assert handler.output
+
+        assert foundOne, "No handlers available. Without them, the program cannot run."
+
+    def test_inlineimport(self):
+        handler = InlineImport()
+
+        assert handler.multiline
+        assert handler.wants("import")
+        assert handler.wants("import        ")
+        assert not handler.wants("import file.py args")
+
+        handler.handle("import\ndummy content")
+        assert handler.output(wrapper=None) == "dummy content"
+
+    def test_fakeinlineexec(self):
+        handler = FakeInlineExec()
+
+        assert handler.multiline
+        assert handler.wants("exec")
+        assert handler.wants("exec      ")
+        assert not handler.wants("exec filename.py")
+
+        handler.handle("exec\nbash 4\n24")
+        assert handler.output(wrapper=None) == "bash 4\n24"
+
     def test_inlineshellcmd(self, monkeypatch):
         def executeMock(*args):
             return str(24), str(None)
