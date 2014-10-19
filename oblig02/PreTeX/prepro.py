@@ -184,7 +184,7 @@ class PreproIncluded(Handler):
     endToken = None
     multiline = endToken != None
     defaultWrapper = None
-    pattern = re.compile(r'include{([a-zA-Z_\-0-9\.][A-Za-z_\-\s0-9\.\/\\]*?)?([A-Za-z_\-\s0-9\.]+)(\.[a-zA-Z]+)}')
+    pattern = re.compile(r'include{([a-zA-Z_\-0-9\.\/\\][A-Za-z_\-\s0-9\.\/\\]*?)?([A-Za-z_\-\s0-9\.]+)(\.[a-zA-Z]+)}')
     action = "Preprocessed latex-included files"
 
     def handle(self, input):
