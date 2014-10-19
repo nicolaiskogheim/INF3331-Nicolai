@@ -1,8 +1,8 @@
 import pytest
-import os.path
+import os
 import tempfile
 from shutil import rmtree
-from PreTeX.prepro import Scanner, Handler, Handlers, Import, Exec, Verb
+from PreTeX.prepro import Scanner, Handler, Handlers, Import, Exec, Verb, InlineShellCmd, ShowHide, State, BadInput, PreproIncluded, Var
 from PreTeX import helper
 
 
@@ -105,7 +105,6 @@ class TestExecHandler:
           assert handler.output(wrapper=None) == "$ python script_example.py 4\n24.0"
 
 
-
 class TestVerbHandler:
 
       def test_verb_handler_wants_preprocessor_code(self):
@@ -122,3 +121,99 @@ class TestVerbHandler:
           x = Verb().multiline
 
           assert x == True
+
+class TestHandler:
+    def test_inlineshellcmd(self, monkeypatch):
+        def executeMock(*args):
+            return str(24), str(None)
+
+        monkeypatch.setattr(helper, 'execute', executeMock)
+        handler = InlineShellCmd()
+
+        assert handler.multiline
+        assert handler.wants("python test.py 4")
+        assert handler.wants("bash hello.sh -e")
+        assert not handler.wants("rm args")
+
+        handler.handle("fake 4\nfoocmd -l")
+        assert handler.output(wrapper=None) == "fake 4\n24"
+
+    def test_showhide(self, monkeypatch):
+        x = {"this":"true"}
+        @staticmethod
+        def stateMock(key):
+            return x.get(key)
+
+        monkeypatch.setattr(State, 'getVar', stateMock)
+        handler = ShowHide()
+
+        assert handler.multiline
+        assert handler.wants("show foo==bar")
+        assert handler.wants("hide baz==bat")
+        assert not handler.wants("help me==now")
+        assert not handler.wants("show picz")
+
+        handler.handle("show var==false\nThis is nothing\n")
+        assert handler.output(wrapper=None) == ""
+
+        handler.handle("hide var==false\nThis is something\n")
+        assert handler.output(wrapper=None) == "This is something\n"
+
+        handler.handle("show this==true\nThis is something\n")
+        assert handler.output(wrapper=None) == "This is something\n"
+
+        handler.handle("hide this==true\nThis is nothing\n")
+        assert handler.output(wrapper=None) == ""
+
+    def test_preproincluded(self, monkeypatch):
+        def monkeyExists(*args):
+            return True
+        def monkeyMakedirs(*args):
+            pass
+        def monkeyExecute(*args):
+            return "dummy content", None
+        monkeypatch.setattr(os.path, 'exists', monkeyExists)
+        monkeypatch.setattr(os, 'makedirs', monkeyMakedirs)
+        monkeypatch.setattr(helper, 'execute', monkeyExecute)
+        handler = PreproIncluded()
+
+        assert not handler.multiline
+        assert handler.wants("include{/absolute/path/to/file.xtex}")
+        assert handler.wants("include{relative/path/to/file.tex}")
+        assert handler.wants("include{any_file.actually}")
+        assert not handler.wants("include my/file.tex")
+        assert not handler.wants("include(this.file)")
+
+        handler.handle("include{dummy/file.tex}")
+        assert "dummy/file" in handler.output()
+
+    def test_var(self, monkeypatch):
+        key, value = "foo", "bar"
+        @staticmethod
+        def monkeySetVar(left, right):
+            if not left == key \
+            or not right == value:
+                pystest.fail("var did not call state with right params")
+        monkeypatch.setattr(State, 'setVar', monkeySetVar)
+
+        handler = Var()
+
+        assert not handler.multiline
+        assert handler.wants("var hello=true")
+        assert handler.wants("var for = realz")
+        assert not handler.wants("var for == realz")
+        assert not handler.wants("where am = i")
+
+        handler.handle("var foo=bar")
+
+    def test_badinput(self):
+        handler = BadInput()
+
+        assert not handler.multiline
+        assert handler.wants("This handler eats everything")
+        assert handler.wants("$That is the purpose")
+        assert handler.wants("of this %$2934789 handler.")
+
+        handler.handle("test")
+        assert handler.output().find("test")
+        assert handler.output().find("did not understand")

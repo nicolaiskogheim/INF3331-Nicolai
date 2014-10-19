@@ -20,17 +20,17 @@ TOC:
   - [ ] State
   - [ ] Handlers
   - [ ] Handler
-  - [ ] Import
+  - [x] Import
   - [ ] InlineImport
-  - [ ] Exec
+  - [x] Exec
   - [ ] FakeInlineExec
-  - [ ] Verb
-  - [ ] InlineShellCmd
+  - [x] Verb
+  - [x] InlineShellCmd
   - [ ] Var
-  - [ ] ShowHide
-  - [ ] PreproIncluded
-  - [ ] BadInput
-  - [ ] Scanner
+  - [x] ShowHide
+  - [x] PreproIncluded
+  - [x] BadInput
+  - [x] Scanner
   - [ ] main
   * ***helper.py***
   - [x] extract
