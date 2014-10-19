@@ -263,8 +263,9 @@ class Scanner:
                             self.handler.handle(line)
                             newfile += self.handler.output()
                         break
-                else: # will never happen...
-                    pass
+                else:
+                    logging.error("No handlers to parse file with. Aborting..")
+                    sys.exit(1)
             else:
                 newfile += line + "\n"
                 line_number_map.addPair(1+i+startLine,
