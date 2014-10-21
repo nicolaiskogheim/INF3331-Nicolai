@@ -229,7 +229,6 @@ class Scanner:
 
     def __init__(self):
         self.captured = ""
-        self.lnrmap=[]
 
     def scan(self,content, token="%@", startLine=0):
         lines = content.split("\n")
