@@ -277,7 +277,7 @@ class PreproIncluded(Handler):
             return
 
         #if ext not "xtex": warn("Extension not xtex in {0}".format(fpath+ext))
-        include_folder = "./preprocessed_tex_files_to_include"
+        include_folder = "./pretex_includes"
         if not path.exists(include_folder):
             makedirs(include_folder)
 
