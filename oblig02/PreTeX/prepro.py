@@ -131,7 +131,6 @@ class InlineShellCmd(Handler):
     defaultWrapper = latex.terminal
     pattern = re.compile(r'^(python|bash) .*$')
     action = "Ran inline code in shell"
-    # Maybe format action message based on input to wants
 
     def handle(self, input):
         firstLine, code = input.split("\n",1)
@@ -272,14 +271,11 @@ class Scanner:
                                         len(newfile.split('\n')) -1 + startLine)
 
 
-        #Strip last newline and or trailing whitespace
         newfile = newfile.rstrip()
 
         #Add  line number map if not recursincg
         if startLine == 0:
             newfile += line_number_map.getEncoded()
-
-        # maybe strip out all line numbers if no errors
 
         return newfile
 
