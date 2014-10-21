@@ -97,10 +97,11 @@ for i in xrange(10):
 %@
 %@fi
 
-%@include{test_file_inclusion/errorfolder/tex_error.xtex}
+%@include{dirA/test.xtex}
 
+%@include{dirA/dirB/test_error.tex}
+
+% bad import
 %@include{path/to.xtex}
-
-%@include{test_file_inclusion/test.xtex}
 
 \end{document}
