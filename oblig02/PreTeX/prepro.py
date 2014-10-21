@@ -296,14 +296,17 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("source", help="path to xtex to preprocess")
     parser.add_argument("destination", help="path to preprocessed file")
+
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-v", "--verbose", action="store_true", default=False,
                         help="Be verbose about what is going on")
     group.add_argument("-q", "--quiet", action="store_true", default=False,
                         help="Suppress normal output. Returns >0 on error, 0 otherwise.")
+
     parser.add_argument("-s", "--simple", action="store_true", default=False,
                         help="Keeps formatting to a minimum, using only the standard"+\
                         " verbatim latex environment.")
+
     args = parser.parse_args()
 
     if args.verbose:
@@ -316,9 +319,7 @@ if __name__=="__main__":
     if args.simple:
         latex.configure(simpleMode=True)
 
+
     sourcefile = helper.load(args.source)
     output = Scanner().scan(sourcefile)
     helper.write(args.destination, output)
-
-    # import doctest
-    # doctest.testmod()
