@@ -25,7 +25,7 @@ def parse_output(unparsed):
 
     return parsed
 
-def compile_latex(source, interactive=False):
+def compile_latex(source_path, interactive=False):
     nonstopmode = not interactive
 
     args = []
@@ -33,7 +33,7 @@ def compile_latex(source, interactive=False):
     args.append("-file-line-error")
     if nonstopmode:
         args.append("-interaction=nonstopmode")
-    args.append(source)
+    args.append(source_path)
 
     proc = subprocess.Popen(args,
                             stdout=subprocess.PIPE
@@ -51,7 +51,7 @@ def compile_latex(source, interactive=False):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("source",
+    parser.add_argument("source_path",
                         help="Path to file to comiple")
     parser.add_argument("-i", "--interactive",
                         help="runs pdftex with -interaction=nonstopmode",
@@ -79,6 +79,6 @@ if __name__ == "__main__":
                             level=logging.INFO)
 
 
-    output = compile_latex(args.source, args.interactive)
+    output = compile_latex(args.source_path, args.interactive)
     if not args.interactive:
         parse_output(output)
