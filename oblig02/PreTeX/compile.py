@@ -5,6 +5,10 @@ import re
 import subprocess
 
 def parse_output(unparsed):
+    """
+        Receives text (i.e. output from pdftex), matches error lines,
+        and maps linenumbers in output to linenumbers from original file.
+    """
     error_lines_pattern = re.compile(r'(..?\/[\w/.]+(?:\n[\w/.]+)?):([\d]+(?:\n[\d]+)?):(.*(?:\n.*)?)')
     parsed = ""
 
@@ -26,6 +30,10 @@ def parse_output(unparsed):
     return parsed
 
 def compile_latex(source_path, interactive=False):
+    """
+        Runs pdflatex on source_path and returns output.
+        Runs in interactive mode if interactive==True
+    """
     nonstopmode = not interactive
 
     args = []

@@ -8,6 +8,10 @@ import re
 import latex
 
 class State:
+    """
+        Maintains program state
+        Used by handlers to keep track of variables
+    """
     variables = {}
 
     @staticmethod
@@ -20,7 +24,10 @@ class State:
 
 
 class Handlers(object):
-
+    """
+        A simple iterator.
+        Iterates over every subclass of Handler
+    """
     def __init__(self):
         self.handlers = []
         for cls in Handler.__subclasses__():
@@ -38,16 +45,33 @@ class Handlers(object):
         return self.handlers[self.index]
 
 class Handler(object):
+    """
+        Handler base class / interface.
+        Inheriting classes must implement the handle() method,
+        and can override wants(), and output() if necessary.
+    """
     def wants(self, input):
+        """
+            Test input on this method to know if the handler
+            can handle the input.
+        """
         acceptsLine = True if self.pattern.match(input) else False
         if acceptsLine:
             logging.info("  "+self.__class__.__name__+" handler processes: "+input)
         return acceptsLine
 
     def handle(*args, **kwargs):
+        """
+            This is the method doing all the lifting
+        """
         raise NotImplementedError("Should have implemented handle method!")
 
     def output(self, wrapper="default"):
+        """
+            Returns handled input.
+            Wrapper is a function that wraps the output,
+            before it is returned. Defaults to setting in each handler.
+        """
         if wrapper == "default":
             if self.defaultWrapper:
                 return self.defaultWrapper(self.result)
@@ -59,6 +83,10 @@ class Handler(object):
             return self.result
 
 class Import(Handler):
+    """
+        Imports content from filename matching regex:
+        import filename (regex)
+    """
     endToken = None
     multiline = endToken != None
     defaultWrapper = latex.fancyverb
@@ -76,6 +104,15 @@ class Import(Handler):
         self.result =helper.extract(file_contents, self.regex)
 
 class InlineImport(Handler):
+    """
+        Imports content between import and endtoken.
+
+        import
+        content
+        endtoken
+
+        Default is to wrap
+    """
     endToken = "%@"
     multiline = endToken != None
     defaultWrapper = latex.fancyverb
@@ -87,6 +124,10 @@ class InlineImport(Handler):
         self.result = content
 
 class Exec(Handler):
+    """
+        Executes command and args, returns result
+        exec command args
+    """
     endToken = None
     multiline = endToken != None
     defaultWrapper = latex.terminal
@@ -104,6 +145,12 @@ class Exec(Handler):
         self.result = "$ " + command + " " + args + "\n" + execution_result
 
 class FakeInlineExec(Handler):
+    """
+        Returns text between exec and endtoken
+        exec
+        content
+        endtoken
+    """
     endToken = "%@"
     multiline = endToken != None
     defaultWrapper = latex.terminal
@@ -115,6 +162,12 @@ class FakeInlineExec(Handler):
         self.result = content
 
 class Verb(Handler):
+    """
+        Returns content between verbatim and endtoken
+        verbatim
+        content
+        endtoken
+    """
     endToken = "%@"
     multiline = endToken != None
     defaultWrapper = latex.verbatim
@@ -126,6 +179,12 @@ class Verb(Handler):
         self.result = content
 
 class InlineShellCmd(Handler):
+    """
+        Executes code like a shell, and returns it.
+        Allowed commands is python and bash.
+        Ex:
+        bash cat file.txt
+    """
     endToken="%@"
     multiline = endToken != None
     defaultWrapper = latex.terminal
@@ -141,6 +200,11 @@ class InlineShellCmd(Handler):
         self.result = "\n".join([firstLine, executed]).rstrip("\n")
 
 class Var(Handler):
+    """
+        Declares and assigns a value to a variable
+        var name = value
+        This handler uses State to save the variable.
+    """
     endToken = None
     multiline = endToken != None
     defaultWrapper = None
@@ -155,6 +219,14 @@ class Var(Handler):
         self.result = ""
 
 class ShowHide(Handler):
+    """
+        Controls visibility of block.
+        show name == value
+        returns content if name equals value
+        hide name == value
+        returns empty string if name equals value
+        and vice versa
+    """
     endToken = "%@fi"
     multiline = endToken != None
     defaultWrapper = None
@@ -180,6 +252,13 @@ class ShowHide(Handler):
                 self.result = block
 
 class PreproIncluded(Handler):
+    """
+        Runs filepath in
+        include{filepath}
+        through the preprocessor, and copies file to dedicated
+        to-be-included folder.
+        Returns path to preprocessed file.
+    """
     endToken = None
     multiline = endToken != None
     defaultWrapper = None
@@ -213,6 +292,15 @@ class PreproIncluded(Handler):
         self.result = "\\include{"+ targetPath +"}"
 
 class BadInput(Handler):
+    """
+        "Catch all" handler.
+        If no other handler has accepted the input,
+        this one will, and returns comments about it
+        in the preprocessed file.
+
+        And yes, this one runs last because it is placed
+        last in this file.
+    """
     endToken = None
     multiline = endToken != None
     defaultWrapper = None
@@ -226,6 +314,14 @@ class BadInput(Handler):
             self.result = "% Preprocessor: found stray closing tag %@"
 
 class Scanner:
+    """
+        Similar to a lexer/tokenizer.
+        This class' responsibility is to iterate over the input
+        and for each line "asking" a handler to handle that line.
+        If yes, the scanner asks if the handler wants multiple lines,
+        and if true then the scanner captures lines until the handlers
+        endtoken is found.
+    """
 
     def __init__(self):
         self.captured = ""

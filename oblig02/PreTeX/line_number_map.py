@@ -5,15 +5,25 @@ rawmap = []
 realmap = {}
 
 def addPair(origLnr, newLnr):
+    """
+        "Saves" / adds line number pair to rawmap
+    """
     global rawmap
     rawmap.append("{0}:{1}".format(origLnr, newLnr))
 
 def getEncoded():
+    """
+        Returns a line number map
+        A such map is intended to be placed in a preprocessed file.
+    """
     global rawmap
     return "\n\n%PreTex data. Ignore following line.\n"+\
            "%[{0}]".format(",".join(rawmap))
 
 def getDecoded(path):
+    """
+        Loads path, gets the map, returns it.
+    """
     global realmap
     if not path in realmap:
         lastLine = helper.load(path).rstrip().split("\n")[-1]
@@ -32,6 +42,10 @@ def getDecoded(path):
     return realmap[path]
 
 def getLineNumber(lnr, path):
+    """
+        Given a path and a line number from a preprocessed file,
+        returns corresponding file number from unprocessed file.
+    """
     global realmap
     lnr = int(lnr)
 
