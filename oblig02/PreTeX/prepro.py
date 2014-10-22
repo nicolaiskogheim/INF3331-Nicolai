@@ -7,6 +7,8 @@ from os import path, makedirs
 import re
 import latex
 
+thisScript = path.abspath(inspect.stack()[0][1])
+
 class State:
     """
         Maintains program state
@@ -282,10 +284,7 @@ class PreproIncluded(Handler):
             makedirs(include_folder)
 
         targetPath = path.join(include_folder,fpath, fname)
-
-        thisScript = inspect.stack()[0][1]
         result, err= helper.execute(["python",thisScript, originalFile, targetPath+".tex"])
-
 
         # if err: out err
         # newPath = path.join(include_folder, path)
@@ -412,5 +411,8 @@ if __name__=="__main__":
 
 
     sourcefile = helper.load(args.source)
-    output = Scanner().scan(sourcefile)
-    helper.write(args.destination, output)
+    sourcefolder = args.source.rsplit(path.sep,1)[0]
+
+    with cd(sourcefolder):
+        output = Scanner().scan(sourcefile)
+        helper.write(args.destination, output)
