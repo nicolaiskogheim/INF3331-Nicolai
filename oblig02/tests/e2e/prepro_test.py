@@ -2,11 +2,14 @@ import pytest
 import os
 import subprocess
 from PreTeX import prepro
+from PreTeX.cd import cd
+import inspect
 
 testfiles = 'testfiles'
 
 test_file_in = 'tex_before.xtex'
 test_file_out = 'tex_after.tex'
+scanner_test_file_out = 'scanner_after.tex'
 tmp_file_out = 'tex_processed.tmp'
 
 preprocessor = '../../PreTeX/prepro.py'
@@ -43,15 +46,20 @@ class TestShit():
 
 # Faar error med stier
 
-    # def test_prepro_e2e_from_scanner(self):
-    #     expected_result_fpath = os.path.join(testfiles, test_file_out)
-    #     with open(expected_result_fpath) as f:
-    #         expected = f.read()
-    #
-    #     unprocessed_fpath = os.path.join(testfiles, test_file_in)
-    #     with open(unprocessed_fpath) as f:
-    #         unprocessed = f.read()
-    #
-    #     actual = prepro.Scanner().scan(unprocessed)
-    #
-    #     assert actual == expected
+    def test_prepro_e2e_from_scanner(self):
+        thisScript = os.path.abspath(inspect.stack()[0][1])
+        sourcefolder = thisScript.rsplit(os.path.sep,1)[0]
+        with cd(sourcefolder):
+
+            expected_result_fpath = os.path.join(testfiles, scanner_test_file_out)
+            with open(expected_result_fpath) as f:
+                expected = f.read()
+
+            unprocessed_fpath = os.path.join(testfiles, test_file_in)
+            with open(unprocessed_fpath) as f:
+                unprocessed = f.read()
+
+            with cd(testfiles):
+                actual = prepro.Scanner().scan(unprocessed)
+
+            assert actual == expected
