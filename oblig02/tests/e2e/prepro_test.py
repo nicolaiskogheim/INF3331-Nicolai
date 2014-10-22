@@ -14,7 +14,7 @@ tmp_file_out = 'tex_processed.tmp'
 
 preprocessor = '../../PreTeX/prepro.py'
 command = 'python'
-class TestShit():
+class TestPrepro():
     def test_prepro_e2e_from_main(self):
         try:
             expected_result_fpath = os.path.join(testfiles, test_file_out)
