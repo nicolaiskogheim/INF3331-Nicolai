@@ -412,7 +412,11 @@ if __name__=="__main__":
 
 
     sourcefile = helper.load(args.source)
-    sourcefolder = args.source.rsplit(path.sep,1)[0]
+
+    if path.sep in args.source:
+        sourcefolder = args.source.rsplit(path.sep,1)[0]
+    else:
+        sourcefolder = ""
     notice = "% Warning: Editing this file directly can cause erratic behaviour in the compiler.\n"
 
     with cd(sourcefolder):
