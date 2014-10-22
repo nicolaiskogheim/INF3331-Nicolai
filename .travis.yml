@@ -4,10 +4,12 @@ python:
   - "2.7"
 
 install: "pip install coverage"
-script:
+
+before_script:
   - "coverage run -a --branch oblig02/PreTeX/prepro.py oblig02/tests/e2e/testfiles/tex_before.xtex /dev/null -q"
   - "coverage run -a --branch --source=oblig02/PreTeX `which py.test`"
-  - "coverage report -m --fail-under=85 --omit="*__init__.py""
+
+script: "coverage report -m --fail-under=85 --omit="*__init__.py""
 
 notifications:
   email:
