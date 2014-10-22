@@ -27,6 +27,18 @@ class TestLineNumberMap:
 
         assert result == expected
 
+    def test_getDecoded_can_fail(self, monkeypatch):
+        def monkeyloader(path):
+            return "bad format :("
+
+        monkeypatch.setattr(helper, 'load', monkeyloader)
+
+        result = getDecoded("bazpath")
+
+        expected = "not found"
+
+        assert result == expected
+
     def test_getLineNumber(self, monkeypatch):
         def monkeyloader(path):
             return "foo\nbar\n%[1:1,2:5,3:7]"
@@ -36,5 +48,17 @@ class TestLineNumberMap:
         result = getLineNumber(6, "barpath")
 
         expected = '2'
+
+        assert result == expected
+
+    def test_getLineNumber_can_fail(self, monkeypatch):
+        def monkeyloader(path):
+            return "bad format :("
+
+        monkeypatch.setattr(helper, 'load', monkeyloader)
+
+        result = getLineNumber(6, "barkrakk")
+
+        expected = '6'
 
         assert result == expected

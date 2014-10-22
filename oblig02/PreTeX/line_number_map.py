@@ -49,12 +49,11 @@ def getLineNumber(lnr, path):
     global realmap
     lnr = int(lnr)
 
-    if realmap.get(path) == "not found":
-        return lnr
-
-    elif not path in realmap:
+    if not path in realmap:
       realmap[path] = getDecoded(path)
 
+    if realmap.get(path) == "not found":
+        return str(lnr)
 
     lastLnr = 0
     for m in realmap[path]:
