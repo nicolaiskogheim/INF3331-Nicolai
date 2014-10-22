@@ -1,0 +1,131 @@
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyvrb}
+\usepackage{framed}
+\usepackage{color}
+\providecommand{\shadedwbar}{}
+\definecolor{shadecolor}{rgb}{0.87843, 0.95686, 1.0}
+\renewenvironment{shadedwbar}{
+\def\FrameCommand{\color[rgb]{0.7,     0.95686, 1}\vrule width 1mm\normalcolor\colorbox{shadecolor}}\FrameRule0.6pt
+\MakeFramed {\advance\hsize-2mm\FrameRestore}\vskip3mm}{\vskip0mm\endMakeFramed}
+\providecommand{\shadedquoteBlueBar}{}
+\renewenvironment{shadedquoteBlueBar}[1][]{
+\bgroup\rmfamily
+\fboxsep=0mm\relax
+\begin{shadedwbar}
+\list{}{\parsep=-2mm\parskip=0mm\topsep=0pt\leftmargin=2mm
+\rightmargin=2\leftmargin\leftmargin=4pt\relax}
+\item\relax}
+{\endlist\end{shadedwbar}\egroup}
+
+
+\begin{document}
+
+\section*{Code import}
+
+% Imorted from line 28
+\begin{shadedquoteBlueBar}
+\fontsize{9pt}{9pt}
+\begin{Verbatim}
+    out = 1.
+    for o in xrange(2, order+1):
+        out *= o
+    return out
+\end{Verbatim}
+\end{shadedquoteBlueBar}
+\noindent
+
+% Wrapped inline code from line 30
+\begin{shadedquoteBlueBar}
+\fontsize{9pt}{9pt}
+\begin{Verbatim}
+Dette er en viktig kode-snutt.
+\end{Verbatim}
+\end{shadedquoteBlueBar}
+\noindent
+
+% Errored from line 34
+% Preprocessor: did not understand %@badcommand
+\section*{Code execution}
+
+
+% Executed from line 39
+\begin{Verbatim}[numbers=none,frame=lines,label=\fbox{{\tiny Terminal}},fontsize=\fontsize{9pt}{9pt},
+labelposition=topline,framesep=2.5mm,framerule=0.7pt]
+$ python script_example.py 4
+
+\end{Verbatim}
+\noindent
+
+% Wrapped inline execution from line 41
+\begin{Verbatim}[numbers=none,frame=lines,label=\fbox{{\tiny Terminal}},fontsize=\fontsize{9pt}{9pt},
+labelposition=topline,framesep=2.5mm,framerule=0.7pt]
+$ echo "Just another Perl hacker,"
+\end{Verbatim}
+\noindent
+
+\section*{Fake import}
+
+% Wrapped in verbatim block from line 47
+\begin{Verbatim}
+This could be code.
+\end{Verbatim}
+
+\section*{Fake execusion}
+
+% Ran inline code in shell from line 53
+\begin{Verbatim}[numbers=none,frame=lines,label=\fbox{{\tiny Terminal}},fontsize=\fontsize{9pt}{9pt},
+labelposition=topline,framesep=2.5mm,framerule=0.7pt]
+python fake_name.py
+6.0
+\end{Verbatim}
+\noindent
+
+% Ran inline code in shell from line 60
+\begin{Verbatim}[numbers=none,frame=lines,label=\fbox{{\tiny Terminal}},fontsize=\fontsize{9pt}{9pt},
+labelposition=topline,framesep=2.5mm,framerule=0.7pt]
+bash fake_name.sh fake_arg
+4
+\end{Verbatim}
+\noindent
+
+\section*{Branching}
+
+% Assigned to variable from line 66
+
+% Controlled visibility from line 68
+
+
+% Controlled visibility from line 76
+% Wrapped in verbatim block from line 81
+\begin{Verbatim}
+for i in xrange(10):
+    print i+1
+\end{Verbatim}
+
+\bad
+
+% Controlled visibility from line 85
+% Wrapped in verbatim block from line 91
+\begin{Verbatim}
+for i=1:10
+    i
+end
+\end{Verbatim}
+
+% Controlled visibility from line 93
+
+
+% Preprocessed latex-included files from line 100
+\include{./pretex_includes/testfiles/dirA/test}
+% Preprocessed latex-included files from line 102
+\include{./pretex_includes/testfiles/dirA/dirB/test_error}
+% bad import
+% Preprocessed latex-included files from line 105
+
+\end{document}
+
+%PreTex data. Ignore following line.
+%[1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,11:11,12:12,13:13,14:14,15:15,16:16,17:17,18:18,19:19,20:20,21:21,22:22,23:23,24:24,25:25,26:26,27:27,29:39,32:32,33:33,34:34,35:35,36:36,37:37,38:38,39:39,32:48,33:48,35:50,36:51,37:52,38:53,40:61,43:43,44:44,45:45,46:46,47:47,48:48,43:68,44:68,45:69,46:70,49:49,50:50,51:51,52:52,49:75,50:75,51:76,52:77,58:58,59:59,60:60,61:61,62:62,63:63,64:64,58:85,59:85,62:62,63:63,64:64,65:65,66:66,67:67,68:68,62:93,63:93,64:94,65:95,67:97,74:74,74:100,75:100,4:4,5:5,6:6,7:7,8:8,84:86,81:107,82:107,83:108,84:109,5:5,6:6,7:7,8:8,9:9,10:10,95:97,91:117,92:117,98:98,98:120,99:120,101:122,103:124,104:125,106:127,107:128,108:129]
