@@ -6,6 +6,7 @@ import line_number_map
 from os import path, makedirs
 import re
 import latex
+from cd import cd
 
 thisScript = path.abspath(inspect.stack()[0][1])
 

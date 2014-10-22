@@ -1,3 +1,5 @@
+import os
+
 # http://stackoverflow.com/a/13197763/2531091
 class cd:
     """Context manager for changing the current working directory"""
