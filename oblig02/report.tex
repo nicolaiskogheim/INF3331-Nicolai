@@ -1,0 +1,199 @@
+% Warning: Editing this file directly can cause erratic behaviour in the compiler.
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyvrb}
+\usepackage{framed}
+\usepackage{color}
+\providecommand{\shadedwbar}{}
+\definecolor{shadecolor}{rgb}{0.87843, 0.95686, 1.0}
+\renewenvironment{shadedwbar}{
+\def\FrameCommand{\color[rgb]{0.7,     0.95686, 1}\vrule width 1mm\normalcolor\colorbox{shadecolor}}\FrameRule0.6pt
+\MakeFramed {\advance\hsize-2mm\FrameRestore}\vskip3mm}{\vskip0mm\endMakeFramed}
+\providecommand{\shadedquoteBlueBar}{}
+\renewenvironment{shadedquoteBlueBar}[1][]{
+\bgroup\rmfamily
+\fboxsep=0mm\relax
+\begin{shadedwbar}
+\list{}{\parsep=-2mm\parskip=0mm\topsep=0pt\leftmargin=2mm
+\rightmargin=2\leftmargin\leftmargin=4pt\relax}
+\item\relax}
+{\endlist\end{shadedwbar}\egroup}
+
+\definecolor{codegray}{gray}{0.95}
+\newcommand{\code}[1]{\colorbox{codegray}{\texttt{#1}}}
+
+\newcommand{\bs}[1]{{\texttt{\textbackslash #1}}}
+
+\title{Obligatorisk innlevering 2 høsten 2014, INF3331}
+\author{Nicolai Skogheim <nicolai.skogheim@gmail.com>}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Oversikt}
+Oblig 2 er delt inn i fire deler: Meta, PreTeX, resources og tests.
+PreTeX er den viktigste og er der hoveddelen av oppgaven er løst.
+All preprosessering skjer det.
+Resrources inneholder alt som fulgte med oppgaven.
+Tests er mappen som inneholder alt av tester, inndelt i unit-tester
+og end-to-end-tester.
+Meta er bare en mappe hvor jeg samlet tankene mine planla programmet
+før og underveis, og kan trygt oversees.
+
+Jeg har gjort alle oppgavene, men siden de henger veldig sammen med
+hverandre kommer jeg ikke til å ta for meg oppgavene hver for seg.
+
+
+\section{prepro.py}
+Denne filen består stort sett av tre ting: en front end, en scanner, og
+behandlere / "handlers". Brukerhjelp fåes ved å kjøre programmet
+med \code{-h}-flagget.
+
+\subsection{Frontend}
+Denne delen, som finnes nederst i filen, sørger for et ålreit brukergrenesnitt
+slik som det er bedt om i oppgave 11, med mulighet for verbose/quiet modus
+blant annet. Denne delen administrerer også kjøringen av preprosessoren, slik
+som man ville anta, i tillegg til å flytte kjøringen/bytte mappe til der hvor
+latex-filen finnes.
+
+\subsection{Scanner}
+Denne klassen tar en tekst, itererer over linjene og returnerer en ferdig
+preprosessert tekst. Prosessen (forhåpentligvis enkelt og) kort forklart er slik:
+Hvis en linje ikke begynner med tegnene "\%@" legges linja til output.
+Hvis en linje begynner med disse tegnene starter en loop som itererer over
+over handlers. Inputlinjen blir testet på en handler ved å kalle
+handler.wants(input). Når en handler vil ha linjen, sjekkes handler.multiline
+for at scanneren skal vite om den skal plukke opp flere linjer. Hvis ja, så
+fanger scanneren opp linjer til den finner en linje lik handler.endtoken og
+kaller så handler.handle med input. Hvis multiline er False kalles handler.handle
+bare med den ene linja. Resultatet fra en handler sendes rett inn til scanner
+for å lete etter prepro-tags inne i resultatet (typisk etter et treff på \%@show),
+og resultatet av dette igjen legges til output.
+
+\subsection{Handlers}
+Hver handler har en wants-metode som returnerer True for input den "vil ha",
+altså input som matcher en regex. Videre har den en handle-metode som gjør
+prosesseringen. Resultatet fåes ved å kalle handler.output, alternativt med
+en funksjon som behandler output før det returneres (typisk en funksjon som
+pakker resultatet inn i latex.)
+
+Alle handler'e arver fra klassen Handler, og får blant annet wants-metoden
+og output-metoden som er lik for alle handlers. Altså, funksjonaliteten er lik
+for hver handler, men hver handler har variabler for multiline, regex osv
+som gjør at wants- og output-metodene oppfører seg forskjellig.
+
+Til sist (rettere sagt nesten først/øverst) er en klasse Handlers. Denne
+kan brukes i en loop for å iterere over handler'ene, og det er denne klassen
+scanneren kaller.
+
+
+\section{compile.py}
+Denne filen består stort sett av tre deler: frontend, kompilator, og en funksjon
+for å behandle output fra kompilatoren.
+
+\subsection{Frontend}
+Fontenden gjør akkurat det samme som frontenden til prepro i tillegg til
+å gi mulighet for å velge om man vil kjøre pdftex med eller uten --interaction=nonstopmode.
+
+\subsection{compile\_latex}
+Kompilatoren er en enkel wrapper for pdftex, og returnerer kun
+output fra den kommandoen i tillegg til å printe ut eventuelle feilmeldinger.
+
+\subsection{parse\_output}
+Denne tar tekst fra kompilatoren, hanter ut linjer som er interessante,
+og bytter ut linjenummere så de peker på den originale uprosesserte filen.
+
+
+\section{latex.py}
+Denne filen inneholder funksjoner for å pakke inn tekst i latex.
+Ved å bruke funksjonen \code{configure} kan man instille denne filen til
+å alltid returnere enkel latex (typ verbatim). Dette er gjort ved at
+alle wrappere er dekorert med \code{mode}-funksjonen som rett og slett
+bare overstyrer alle wrapper'ene med verbatim-wrapperen hvis "simpleMode"
+er True.
+
+\section{line\_number\_map.py}
+Jeg ville ikke søple til den preprosesserte fila med kommentarer, så jeg
+valgte heller å ha en map i slutten av fila, med informasjon om hvor hver
+linje kom fra. Denne funksjonaliteten er litt komplisert så derfor er den
+i en egen fil, slik at man skal slippe å tenke så mye på hvordan dette fungerer
+når man leser prepro.py og compile.py. Løsningen endte opp med å bli
+litt for magisk for min smak, og derfor vil jeg heller ikke gå inn på hvordan
+det fungerer.
+
+\section{helper.py}
+Denne filen inneholder funksjonalitet som er ofte brukt rundt om kring.
+Innlasting og skriving av filer, samt kjøring av kode, og til slutt
+en funksjon som tar tekst og en regex og returnerer hele treffet.
+
+Når det er gjort på denne måten har man også full kontroll, på et sted, over
+hvordan disse tingene skjer ettersom all skriving og lesing av filer etc.
+skjer gjennom disse hjelperne. Skulle man senere bestemme seg for kun å
+tillate å kjøre bash-kode, eller nekte å kjøre \code{rm -rf},
+kan man enkelt kontrollere dette her.
+
+\section{Testing}
+Testene er delt opp i unit-tester og end-to-end-tester. Jeg har prøvd å holde
+programkoden testbar og fleksibel, men jeg er ikke fornøyd med hvordan testene
+ser ut nå.
+
+For å kjøre testene trenger py.test og coverage å være installert som kan
+installeres med pip, eller for eksempel brew hvis du er på mac.
+Til selve konverteringen bruker jeg pdftex.
+
+Testene og coverage rapport kan kjøres med følgende kommandoer
+% Wrapped inline execution from line 147
+\begin{Verbatim}[numbers=none,frame=lines,label=\fbox{{\tiny Terminal}},fontsize=\fontsize{9pt}{9pt},
+labelposition=topline,framesep=2.5mm,framerule=0.7pt]
+cd oblig02
+coverage run -a --branch --source=PreTeX `which py.test` -vv
+coverage run -a --branch PreTeX/prepro.py tests/e2e/testfiles/tex_before.xtex /dev/null -q
+coverage run -a --branch PreTeX/compile.py tests/e2e/testfiles/tex_after.tex -q
+coverage report -m --fail-under=85 --omit="*__init__.py","*argparse*"
+\end{Verbatim}
+\noindent
+\code{-q}-flagget stopper output, og kan fjernes for å se hvordan det ser ut
+når programmene printer feilmeldinger. Om det legges til et \code{-v}-flagg
+aktivieres verbose modus, og man får mye informasjon om hva som skjer.
+
+For morroskyld har jeg brukt travis-ci for å kjøre testene mine. Hva som kjøres
+på travis kan man se i konfigurasjonsfilen .travis.yml i rota av prosjektet.
+Hvis du ikke har hørt om travis før anbefaler jeg å gå til repoet mitt på github,
+se på README'en, og trykke på knappen hvor det står "build passing". Du taes
+da til travis, hvor du må logge inn med github-kontoen din. Trykk på knappen i README'en
+en gang til når du er logget inn for å komme til teste-siden min. Trykker du da på
+en av jobbene får du se testresultater og coverage.
+
+Hva gjelder doctesting har vurdert det dithen at det ikke er noe av funksjonaliteten
+i programmet som er hensiktsmessig å teste på denne måten.
+
+
+\section{Avvik fra oppgaven}
+Jeg gjør oppmerksom på at det er tatt enkelte valg som viker far oppgaveteksten.
+En av de viktigere er at syntaksen for importering av .tex-filer er
+\code{\%@include\{sti/til/fil.tex\}} i stedet for \code{\bs include\{sti/til/fil.tex\}}
+
+
+\section{Epilog}
+Jeg kunne skrevet mye mer om programmet og hvordan oppgavene er løst, men
+jeg tror leser vil ha mer utbytte av å bare lese koden. Jeg håper og tror
+at koden tydelig kommuniserer hva den gjør, men setter stor pris på tilbakemeldinger
+rundt dette.
+Ved å titte på tex\_before.xtex og tex\_after.tex i tests/e2e/testfiles kan man
+se hvordan output fra prepro ser ut, og etter å ha kjørt påfølgende kommando
+kan man se pdf'en som blir generert.
+
+% Wrapped inline execution from line 185
+\begin{Verbatim}[numbers=none,frame=lines,label=\fbox{{\tiny Terminal}},fontsize=\fontsize{9pt}{9pt},
+labelposition=topline,framesep=2.5mm,framerule=0.7pt]
+python PreTeX/prepro.py tests/e2e/testfiles/tex_before.xtex tex_after.tex -q
+\end{Verbatim}
+\noindent
+
+\end{document}
+
+%PreTex data. Ignore following line.
+%[1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,11:11,12:12,13:13,14:14,15:15,16:16,17:17,18:18,19:19,20:20,21:21,22:22,23:23,24:24,25:25,26:26,27:27,28:28,29:29,30:30,31:31,32:32,33:33,34:34,35:35,36:36,37:37,38:38,39:39,40:40,41:41,42:42,43:43,44:44,45:45,46:46,47:47,48:48,49:49,50:50,51:51,52:52,53:53,54:54,55:55,56:56,57:57,58:58,59:59,60:60,61:61,62:62,63:63,64:64,65:65,66:66,67:67,68:68,69:69,70:70,71:71,72:72,73:73,74:74,75:75,76:76,77:77,78:78,79:79,80:80,81:81,82:82,83:83,84:84,85:85,86:86,87:87,88:88,89:89,90:90,91:91,92:92,93:93,94:94,95:95,96:96,97:97,98:98,99:99,100:100,101:101,102:102,103:103,104:104,105:105,106:106,107:107,108:108,109:109,110:110,111:111,112:112,113:113,114:114,115:115,116:116,117:117,118:118,119:119,120:120,121:121,122:122,123:123,124:124,125:125,126:126,127:127,128:128,129:129,130:130,131:131,132:132,133:133,134:134,135:135,136:136,137:137,138:138,139:139,140:140,141:141,142:142,143:143,144:144,145:145,146:146,153:153,154:154,155:155,156:156,157:157,158:158,159:159,160:160,161:161,162:162,153:157,154:157,155:158,156:159,157:160,158:161,159:162,160:163,161:164,162:165,163:166,164:167,165:168,166:169,167:170,168:171,169:172,170:173,171:174,172:175,173:176,174:177,175:178,176:179,177:180,178:181,179:182,180:183,181:184,182:185,183:186,184:187,187:187,188:188,189:189,190:190,191:191,192:192,187:194,188:194,189:195,190:196]
