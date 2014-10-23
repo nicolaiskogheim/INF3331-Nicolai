@@ -27,13 +27,3 @@ class TestCompile:
             result, err = process.communicate()
 
             assert os.path.exists(out_file)
-        expected_err_output = dedent("""\
-            INFO:
-            ./tex_after.tex:95: Undefined control sequence. l.110 \\bad
-            ./pretex_includes/dirA/test.tex:2: LaTeX Error: Can be used only in preamble.
-            ./pretex_includes/dirA/test.tex:8: Undefined control sequence. l.13 \\realbad
-            ./pretex_includes/dirA/test.tex:30: You can't use `\spacefactor' in vertical mo de.
-            ./pretex_includes/dirA/test.tex:30: Missing $ inserted. <inserted text>
-            ./pretex_includes/dirA/test.tex:30: Missing $ inserted. <inserted text>
-            Output written on tex_after.pdf (2 pages, 108846 bytes).
-            Transcript written on tex_after.log.""")
