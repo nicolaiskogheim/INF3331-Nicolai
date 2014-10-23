@@ -15,7 +15,7 @@ TOC:
 - [x] Oppgave 9: Filtre
 - [x] Oppgave 10: Linjenummerering
 - [x] Oppgave 11: Front-end til preprosessor
-- [ ] Oppgave 12: Testing og dokumentasjon
+- [x] Oppgave 12: Testing og dokumentasjon
   * ***prepro.py***
   - [x] State
   - [x] Handlers
@@ -31,7 +31,7 @@ TOC:
   - [x] PreproIncluded
   - [x] BadInput
   - [x] Scanner
-  - [ ] main
+  - [x] main
   * ***helper.py***
   - [x] extract
   - [x] execute
