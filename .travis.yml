@@ -13,7 +13,7 @@ script:
   - "cd oblig02"
   - "coverage run -a --branch --source=PreTeX `which py.test` -vv"
   - "coverage run -a --branch PreTeX/prepro.py tests/e2e/testfiles/tex_before.xtex /dev/null -q"
-  - "coverage run -a --branch PreTeX/compile.py tests/e2e/testfiles/tex_after.tex /dev/null -q"
+  - "coverage run -a --branch PreTeX/compile.py tests/e2e/testfiles/tex_after.tex -q"
   - "coverage report -m --fail-under=85 --omit=\"*__init__.py\",\"*argparse*\""
 
 notifications:
