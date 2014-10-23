@@ -5,7 +5,7 @@ python:
 
 install: "pip install coverage"
 
-before_script: "apt-get install texlive-latex-recommended"
+before_script: "sudo apt-get install texlive-latex-recommended"
 
 script:
   - "cd oblig02"
