@@ -27,3 +27,4 @@ class TestCompile:
             result, err = process.communicate()
 
             assert os.path.exists(out_file)
+            os.remove(out_file)
