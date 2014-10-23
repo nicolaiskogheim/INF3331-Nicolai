@@ -6,8 +6,9 @@ python:
 install: "pip install coverage"
 
 script:
-  - "coverage run -a --branch oblig02/PreTeX/prepro.py oblig02/tests/e2e/testfiles/tex_before.xtex /dev/null -q"
-  - "coverage run -a --branch --source=oblig02/PreTeX `which py.test`"
+  - "cd oblig02"
+  - "coverage run -a --branch PreTeX/prepro.py tests/e2e/testfiles/tex_before.xtex /dev/null -q"
+  - "coverage run -a --branch --source=PreTeX `which py.test`"
   - "coverage report -m --fail-under=85 --omit=\"*__init__.py\",\"*argparse*\""
 
 notifications:

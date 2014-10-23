@@ -9,6 +9,7 @@ import latex
 from cd import cd
 
 thisScript = path.abspath(inspect.stack()[0][1])
+include_folder = "pretex_includes"
 
 class State:
     """
@@ -280,11 +281,10 @@ class PreproIncluded(Handler):
             return
 
         #if ext not "xtex": warn("Extension not xtex in {0}".format(fpath+ext))
-        include_folder = "./pretex_includes"
         if not path.exists(include_folder):
             makedirs(include_folder)
 
-        targetPath = path.join(include_folder,fpath, fname)
+        targetPath = path.join(include_folder, fpath, fname)
         result, err= helper.execute(["python",thisScript, originalFile, targetPath+".tex"])
 
         # if err: out err
@@ -411,7 +411,6 @@ if __name__=="__main__":
         latex.configure(simpleMode=True)
 
 
-    sourcefile = helper.load(args.source)
 
     if path.sep in args.source:
         sourcefolder = args.source.rsplit(path.sep,1)[0]
@@ -419,6 +418,12 @@ if __name__=="__main__":
         sourcefolder = ""
     notice = "% Warning: Editing this file directly can cause erratic behaviour in the compiler.\n"
 
-    with cd(sourcefolder):
+    sourcefile = helper.load(args.source)
+
+    if include_folder in args.destination:
         output = Scanner().scan(sourcefile)
         helper.write(args.destination, notice + output)
+    else:
+        with cd(sourcefolder):
+            output = Scanner().scan(sourcefile)
+            helper.write(args.destination, notice + output)

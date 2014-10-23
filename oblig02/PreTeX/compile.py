@@ -1,8 +1,11 @@
 import argparse
+from cd import cd
 import logging
 import line_number_map
+import os
 import re
 import subprocess
+import sys
 
 def parse_output(unparsed):
     """
@@ -56,6 +59,14 @@ def compile_latex(source_path, interactive=False):
     return out
 
 
+def check_file_exists(path):
+    if not os.path.exists(path):
+        fullPath = os.path.join(os.getcwd(), path)
+        sys.exit("Cannot find the source file " + fullPath)
+    else:
+        return True
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -86,7 +97,11 @@ if __name__ == "__main__":
         logging.basicConfig(format='%(levelname)s:%(message)s',
                             level=logging.INFO)
 
+    check_file_exists(args.source_path)
 
-    output = compile_latex(args.source_path, args.interactive)
-    if not args.interactive:
-        parse_output(output)
+    sourcefolder, filepath = args.source_path.rsplit(os.path.sep,1)
+    with cd(sourcefolder):
+        output = compile_latex(filepath, args.interactive)
+
+        if not args.interactive:
+            parse_output(output)

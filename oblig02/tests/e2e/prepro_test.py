@@ -16,13 +16,17 @@ preprocessor = '../../PreTeX/prepro.py'
 command = 'python'
 class TestPrepro():
     def test_prepro_e2e_from_main(self):
-        try:
+
+        thisScript = os.path.abspath(inspect.stack()[0][1])
+        sourcefolder = thisScript.rsplit(os.path.sep,1)[0]
+        with cd(sourcefolder):
+
             expected_result_fpath = os.path.join(testfiles, test_file_out)
             with open(expected_result_fpath) as f:
                 expected = f.read()
 
             unprocessed_fpath = os.path.join(testfiles, test_file_in)
-            actual_result_fpath = os.path.join(testfiles, tmp_file_out)
+            actual_result_fpath = tmp_file_out
             args = [command, preprocessor, unprocessed_fpath, actual_result_fpath]
 
             print args
@@ -30,21 +34,15 @@ class TestPrepro():
             process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             result, error = process.communicate()
 
-            with open(actual_result_fpath) as f:
+            assert error == "WARNING:'path/to.xtex' is not a file!\nWARNING:It will not be included in the resulting .tex file.\n"
+
+            with open(os.path.join(testfiles, actual_result_fpath)) as f:
                 actual = f.read()
-
                 assert actual == expected
-        except IOError as e:
-            print "I/O error({0}): {1}".format(e.errno, e.strerror)
-        except ValueError:
-            print "Could not convert data to an integer."
-        except:
-            print "Unexpected error:", sys.exc_info()[0]
-            raise
 
+            #cleanup
+            os.remove(os.path.join(testfiles, tmp_file_out))
 
-
-# Faar error med stier
 
     def test_prepro_e2e_from_scanner(self):
         thisScript = os.path.abspath(inspect.stack()[0][1])
