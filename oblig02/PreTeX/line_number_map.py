@@ -4,6 +4,10 @@ import re
 rawmap = []
 realmap = {}
 
+def clearData():
+    global rawmap, realmap
+    rawmap, realmap = [], {}
+
 def addPair(origLnr, newLnr):
     """
         "Saves" / adds line number pair to rawmap
