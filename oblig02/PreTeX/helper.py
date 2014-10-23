@@ -18,17 +18,9 @@ def execute(command):
         Executes a shell command,
         returns result, error.
     """
-    legalCommands = ["python"]
-    # if command not in legalCommands:
-    #     msg = "The command {0} is not in the list of allowed commands"
-    #     msg += "Feel free to add it in if you want"
-    #     msg = msg.format(command)
-    #     raise Exception(msg)
-    # else:
-    if True:
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        result, err = process.communicate()
-        return str(result), str(err)
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    result, err = process.communicate()
+    return str(result), str(err)
 
 
 
