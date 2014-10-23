@@ -5,6 +5,7 @@ import pytest
 class TestLineNumberMap:
 
     def test_addPair_getEncoded(self):
+        clearData()
         addPair(1,1)
         addPair(2,5)
 
