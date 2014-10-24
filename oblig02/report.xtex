@@ -155,6 +155,12 @@ coverage report -m --fail-under=85 --omit="*__init__.py","*argparse*"
 når programmene printer feilmeldinger. Om det legges til et \code{-v}-flagg
 aktivieres verbose modus, og man får mye informasjon om hva som skjer.
 
+Om du ikke innstallerer coverage kan du fortsatt kjøre testene vanlig med pytest.
+%exec
+cd oblig02
+py.test
+%@
+
 For morroskyld har jeg brukt travis-ci for å kjøre testene mine. Hva som kjøres
 på travis kan man se i konfigurasjonsfilen .travis.yml i rota av prosjektet.
 Hvis du ikke har hørt om travis før anbefaler jeg å gå til repoet mitt på github,
