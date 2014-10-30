@@ -1,0 +1,29 @@
+Er programmene lette å lese og forstå?
+Fornuftige og beskrivende variabelnavn
+- Variabler er selvbeskrivende.
+Ryddig formatering av koden
+- Ja, koden er godt formatert.
+Gjennomført og konsistent kodestil
+- Koden er konsistent nok.
+Nok kommentarer, f.eks. innledende beskrivelse av script, beskrivelse av hver funksjon/klasse, beskrivelse av evt globale funksjoner, samt beskrivelse av eventuelle kodesnutter som ikke er selvforklarende
+- Alle metoder og klasser er godt dokumenterte.
+
+Løser programmene de problemene de skal?
+- Ja, men preamble legges ikke av et eller annet grunn.
+Ogsaa oppgave med variabler og show/hide bruker litt annet syntax som er helt ok.
+
+Er det lett å forstå hvordan programmet kjøres?
+Gode feilmeldinger og "usage"-beskrivelse hvis programmet brukes feil
+Gjerne -h eller liknende opsjon for å forklare bruk av programmet
+- Det er ikke saa enkelt aa forstaa, men dette skyldes sikkert min mangel av erfaring med python.
+
+Er implementasjonen verifisert/testet?
+Testene må være lette å kjøre, og det må finnes en beskrivelse av hvordan de kjøres
+Bør dekke alle de sentrale funksjonene og klassene i koden, samt så mange feilsituasjoner og brukseksempler som mulig (f.eks. ulike if-tester)
+- Det finnes en beskrivelse paa hvordan testene skal kjoeres. Men pytest kjørte ikke fra oblig02 mappen returnerte 7 errors.
+
+Er rapporten velskrevet, og beskriver den de viktigste delene av oppgaveløsningen?
+Rapporten bør vise at testene er kjørt, slik at programmene er verifisert
+Rapporten bør beskrive hvordan hver enkelt deloppgave er løst, gjerne med utskrift av sentral kode
+Ryddig formattert og minimalt med skrivefeil 
+- Rapporten er godt skrevet. Det er ikke så lett å lime inn kode fra filen til rapporten i dette oppgave siden pdflatex klager på en del kommandoer.
