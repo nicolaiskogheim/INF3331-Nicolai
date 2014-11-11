@@ -12,8 +12,8 @@ def list2img(data,h,w,imgPath):
     Image.fromarray(data).save(imgPath)
 
 def denoise(data,h,w, kappa=0.1, iter=10):
-    #obs: data er 2 dim
-    in_vars = ["data", "kappa", "iter", "h", "w"]
+    data_new = data.copy()
+    in_vars = ["data","data_new","kappa", "iter", "h", "w"]
     code=r"""
         for (int round=0; round<iter; round++)
         {
@@ -21,16 +21,13 @@ def denoise(data,h,w, kappa=0.1, iter=10):
             {
                 for (int j=1; j<w-1; j++)
                 {
-                    data1(i,j) = data(i,j) +kappa*(data(i-1,j)
+                    data_new(i,j) = data(i,j) + kappa*(data(i-1,j)
                     +data(i,j-1) -4*data(i,j) +data(i,j+1)
                     +data(i+1,j));
                 }
             }
-            // Swap links between data and data1
-            tmp = data;
-            data = data1;
-            data1 = tmp;
         }
+        data = data_new;
     """
    
     comp=weave.inline(code,

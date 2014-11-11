@@ -25,8 +25,6 @@ def denoise(data,h,w, kappa=0.1, iter=10):
                                    + data[j*w+(i+1)]
                                    + data[i+ w * (j+1)]
                                    )
-
-    # data1[i*b+j] = data[i*b+j] +kappa*(data[(i-1)*b+j]+data[i*b+(j-1)] -4*data[i*b+j] +data[i*b+(j+1)]+data[(i+1)*b+j])
     return data
 
 if __name__=="__main__":
