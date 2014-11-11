@@ -5,3 +5,6 @@
 # Latex
 *.aux
 *.log
+
+# vim
+*.swp
