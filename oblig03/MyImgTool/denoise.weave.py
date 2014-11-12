@@ -41,7 +41,7 @@ if __name__=="__main__":
     parser.add_argument("-s","--source", help="Path to source image",
                         default="disasterbefore.jpg")
     parser.add_argument("-t","--target", help="Path to resulting image",
-                        "disasterafter.weave.py")
+                        default="disasterafter.weave.jpg")
     parser.add_argument("-k","--kappa", default=0.1,
             help="Value between 0 and 1.")
     parser.add_argument("-i","--iter", default=10,
