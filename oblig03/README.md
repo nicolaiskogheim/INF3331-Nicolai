@@ -1,4 +1,4 @@
-##Examples
+##Running the programs
 
 Run from oblig03 folder
 
