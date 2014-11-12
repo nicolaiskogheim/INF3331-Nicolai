@@ -6,7 +6,7 @@ Python version
 `python MyImgTool/denoise.py -s disasterbefore.jpg -t disasterafter.python.jpg`
 
 Weave version
-`python MyImgTool/denoise.weave.py -s disasterbefore.jpg -t disasterafter.weave.jpg`
+`python MyImgTool/denoise_weave.py -s disasterbefore.jpg -t disasterafter.weave.jpg`
 
 ### Note
 The arguments specified here is the default ones so you don't actually need
