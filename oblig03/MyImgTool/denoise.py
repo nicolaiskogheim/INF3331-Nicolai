@@ -27,6 +27,11 @@ def denoise(data,h,w, kappa=0.1, iter=10):
                                    )
     return data
 
+def run(source, target):
+    imgList, h, w = img2list(source)
+    data = denoise(imgList,h,w, args.kappa, args.iter)
+    list2img(data,h,w,target)
+
 if __name__=="__main__":
 
     parser = argparse.ArgumentParser()
@@ -41,8 +46,4 @@ if __name__=="__main__":
 
     args = parser.parse_args();
 
-    imgList, h, w = img2list(args.source)
-    
-    data = denoise(imgList,h,w, args.kappa, args.iter)
-
-    list2img(data,h,w,args.target)
+    run(args.source, args.target)
