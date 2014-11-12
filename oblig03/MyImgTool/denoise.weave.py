@@ -13,7 +13,8 @@ def list2img(data,h,w,imgPath):
 
 def denoise(data,h,w, kappa=0.1, iter=10):
     data_new = data.copy()
-    in_vars = ["data","data_new","kappa", "iter", "h", "w"]
+    tmp = data.copy()
+    in_vars = ["data","data_new","tmp","kappa", "iter", "h", "w"]
     code=r"""
         for (int round=0; round<iter; round++)
         {
@@ -26,8 +27,10 @@ def denoise(data,h,w, kappa=0.1, iter=10):
                     +data(i+1,j));
                 }
             }
+            tmp = data;
+            data = data_new;
+            data_new = tmp;
         }
-        data = data_new;
     """
    
     comp=weave.inline(code,
