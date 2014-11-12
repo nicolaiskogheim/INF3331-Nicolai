@@ -38,8 +38,10 @@ def denoise(data,h,w, kappa=0.1, iter=10):
 if __name__=="__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("imgPathIn", help="Path to source image")
-    parser.add_argument("imgPathOut", help="Path to resulting image")
+    parser.add_argument("-s","--source", help="Path to source image",
+                        default="disasterbefore.jpg")
+    parser.add_argument("-t","--target", help="Path to resulting image",
+                        "disasterafter.weave.py")
     parser.add_argument("-k","--kappa", default=0.1,
             help="Value between 0 and 1.")
     parser.add_argument("-i","--iter", default=10,
@@ -47,8 +49,8 @@ if __name__=="__main__":
 
     args = parser.parse_args();
     
-    imgList, h, w = img2list(args.imgPathIn)
+    imgList, h, w = img2list(args.source)
 
     data = denoise(imgList,h,w, args.kappa, args.iter)
 
-    list2img(data,h,w,args.imgPathOut)
+    list2img(data,h,w,args.target)
