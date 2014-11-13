@@ -27,9 +27,9 @@ def denoise(data,h,w, kappa=0.1, iter=10):
                                    )
     return data
 
-def run(source, target):
+def run(source, target, kappa, iter):
     imgList, h, w = img2list(source)
-    data = denoise(imgList,h,w, args.kappa, args.iter)
+    data = denoise(imgList,h,w,kappa,iter)
     list2img(data,h,w,target)
 
 if __name__=="__main__":
