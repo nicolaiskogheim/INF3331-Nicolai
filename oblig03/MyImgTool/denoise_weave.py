@@ -4,12 +4,13 @@ from PIL import Image
 from scipy import weave
 
 def img2list(imgPath):
-    data = np.array(Image.open(imgPath))
+    data = np.array(Image.open(imgPath), dtype=np.float)
     h, w = data.shape[:2]
     return data, h, w
 
 def list2img(data,h,w,imgPath):
-    Image.fromarray(data).save(imgPath)
+    data.astype(np.float)
+    Image.fromarray(data).convert("RGB").save(imgPath)
 
 def denoise(data,h,w, kappa=0.1, iter=10):
     data_new = data.copy()
@@ -53,10 +54,10 @@ if __name__=="__main__":
     parser.add_argument("-t","--target", help="Path to resulting image",
                         default="disasterafter.weave.jpg")
     parser.add_argument("-k","--kappa", default=0.1,
-            help="Value between 0 and 1.")
+            help="Value between 0 and 1.", type=float)
     parser.add_argument("-i","--iter", default=10,
-            help="Times do do denoising")
+            help="Times do do denoising", type=int)
 
     args = parser.parse_args();
 
-    run(args.source, args.target)
+    run(args.source, args.target, args.kappa, args.iter)
