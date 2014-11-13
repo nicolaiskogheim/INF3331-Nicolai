@@ -18,9 +18,9 @@ if __name__=="__main__":
 
     parser = argparse.ArgumentParser(description="Utilities for color images")
     parser.add_argument("-f","--source", help="Path to source image",
-                        default="disastercolors.jpg")
-    parser.add_argument("-t","--target", help="Path to resulting image",
-                        default="disastercolors.after.jpg")
+                        default="disastercolor.jpg")
+    parser.add_argument("-o","--target", help="Path to resulting image",
+                        default="disastercolor.after.jpg")
     parser.add_argument("-d","--denoise", help="Denoise image (default false)",
                         action="store_true", default=False)
     parser.add_argument("-k", "--kappa", help="Parameter to denoise",
