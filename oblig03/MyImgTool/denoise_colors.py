@@ -14,6 +14,9 @@ def img2data(source):
 
     return data
 
+def data2img(data, outPath):
+    Image.fromarray(data.astype('uint8')).save(outPath)
+
 if __name__=="__main__":
 
     parser = argparse.ArgumentParser(description="Utilities for color images")
@@ -44,6 +47,7 @@ if __name__=="__main__":
     args = parser.parse_args()
 
     data = img2data(args.source)
+    data2img(data,args.target)
     #data2img(data)
     # rgb to hsi
     #if denoise
