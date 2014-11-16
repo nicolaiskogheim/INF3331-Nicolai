@@ -12,7 +12,7 @@ iter=10
 
 if __name__=="__main__":
     cProfile.run("python_denoise(image_in_path,image_out_python,kappa,iter)", "python_timing")
-    cProfile.run("weave_denoise(image_in_path,image_out_python,kappa,iter)", "weave_timing")
+    cProfile.run("weave_denoise(image_in_path,image_out_weave,kappa,iter)", "weave_timing")
 
     stats = pstats.Stats("python_timing")
     stats.add("weave_timing")
