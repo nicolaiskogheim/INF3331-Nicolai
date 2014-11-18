@@ -184,4 +184,28 @@ if __name__=="__main__":
     args = parser.parse_args()
 
     data = img2data(args.source)
+    hsi = rgb2hsi(data)
+
+
+    h,s,i = hsi[:,:,0], hsi[:,:,1], hsi[:,:,2]
+
+    if args.denoise:
+        denoise(i, args.kappa, args.iterations)
+        denoise(s, args.kappa, args.iterations)
+
+    h = adjust_channel(h, "hue", args.hue, 360)
+    s = adjust_channel(s, "saturation", args.saturation, 1)
+    i = adjust_channel(i, "intensity", args.intensity, 255)
+    hsi = np.dstack((h,s,i))
+
+    rgb = hsi2rgb(hsi)
+    r, g, b = rgb[:,:,0], rgb[:,:,1], rgb[:,:,2]
+
+    r = adjust_channel(r, "red", args.red, 255)
+    g = adjust_channel(g, "green", args.green, 255)
+    b = adjust_channel(b, "blue", args.blue, 255)
+
+    rgb = np.dstack((r,g,b))
+
+    data2img(rgb,args.target)
 
