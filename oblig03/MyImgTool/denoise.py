@@ -2,6 +2,7 @@ from PIL import Image
 import cProfile
 import pstats
 import argparse
+import sys
 
 def img2list(imgPath):
     im = Image.open(imgPath)
@@ -26,6 +27,10 @@ def denoise(data,h,w, kappa=0.1, iter=10):
                                    + data[i+ w * (j+1)]
                                    )
     return data
+
+def adjust_channel(*args, **kwargs):
+    print "You cannot adjust channels on black and white images"
+    sys.exit(0)
 
 def run(source, target, kappa, iter):
     imgList, h, w = img2list(source)
