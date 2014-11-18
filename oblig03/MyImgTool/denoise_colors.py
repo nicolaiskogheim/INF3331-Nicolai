@@ -154,6 +154,7 @@ def adjust_channel(channel, channel_name, addend, max_value):
 if __name__=="__main__":
 
     parser = argparse.ArgumentParser(description="Utilities for color images")
+    # denoise params
     parser.add_argument("-f","--source", help="Path to source image",
                         default="disastercolor.jpg")
     parser.add_argument("-o","--target", help="Path to resulting image",
@@ -164,12 +165,14 @@ if __name__=="__main__":
                         type=float, default=0.1)
     parser.add_argument("-n","--iterations", help="Parameter to denoise",
                         type=int, default=10)
+    # rgb params
     parser.add_argument("-r","--red", help="Adjust red channel with positive or negative int",
                         type=int,default=0)
     parser.add_argument("-g","--green", help="Adjust green channel with positive or negative int",
                         type=int, default=0)
     parser.add_argument("-b","--blue", help="Adjust blue channel with positive or negative int",
                         type=int, default=0)
+    # hsi params
     parser.add_argument("-u","--hue", help="Adjust hue channel with positive or negative int",
                         type=int, default=0)
     parser.add_argument("-s","--saturation", help="Adjust saturation channel with positive or negative int",
