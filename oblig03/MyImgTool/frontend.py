@@ -1,5 +1,8 @@
 import argparse
 from textwrap import dedent
+import logging
+import cProfile
+import pstats
 import denoise as python_denoise
 import denoise_weave as weave_denoise
 import denoise_colors as color_denoise
@@ -49,11 +52,17 @@ if __name__=="__main__":
     parser.add_argument("-i","--intensity", help="Adjust intensity channel with positive or negative int",
                         type=int, default=0)
 
+
     parser.add_argument("-t","--timeit", help="Prints execution time", action="store_true")
+    parser.add_argument("-v", "--verbose", help="Be verbose about what's happening", action="store_true")
 
     args = parser.parse_args()
 
 
+    if args.verbose:
+        logging.basicConfig(format='> %(message)s', level=logging.INFO)
+    else:
+        logging.basicConfig(format='> %(message)s', level=logging.CRITICAL)
 
     if args.denoise:
         shouldDenoise = True
@@ -62,19 +71,39 @@ if __name__=="__main__":
 
     color = False
     if args.denoise == "python":
+        logging.info("Using pure python backend for black and white image.")
         backend = python_denoise
     elif args.denoise == "weave":
+        logging.info("Using numpy/weave backend for black and white image.")
         backend = weave_denoise
     else:
+        logging.info("Using numpy/weave backed for colored image.")
         backend = color_denoise
         color = True
 
     if color is False:
         source = "disasterbefore.jpg" if args.source is "disastercolor.jpg" else args.source
-        backend.run(source, args.target,
-                    shouldDenoise, args.kappa, args.iterations)
+        logging.info("Starting program with image %s", source)
+
+        if args.timeit:
+            timing_name = "blacknwhite_timing"
+            cProfile.run("backend.run(source, args.target, shouldDenoise,\
+                          args.kappa, args.iterations)", timing_name)
+        else:
+            backend.run(source, args.target,
+                        shouldDenoise, args.kappa, args.iterations)
     else:
-        backend.run(args.source, args.target,
-                    shouldDenoise, args.kappa, args.iterations,
-                    args.hue, args.saturation, args.intensity,
-                    args.red, args.green, args.blue)
+        logging.info("Starting program with image %s", args.source)
+        if args.timeit:
+            timing_name = "color_timing"
+            cProfile.run("backend.run(args.source, args.target,\
+                                      shouldDenoise, args.kappa, args.iterations,\
+                                      args.hue, args.saturation, args.intensity,\
+                                      args.red, args.green, args.blue)", timing_name)
+        else:
+            backend.run(args.source, args.target,
+                        shouldDenoise, args.kappa, args.iterations,
+                        args.hue, args.saturation, args.intensity,
+                        args.red, args.green, args.blue)
+    if args.timeit:
+        pstats.Stats(timing_name).strip_dirs().sort_stats("cumulative").print_stats(12)

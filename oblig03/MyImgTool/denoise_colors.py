@@ -3,8 +3,14 @@ import numpy as np
 from PIL import Image
 from scipy import weave
 import sys
+import logging
 
 def img2list(image_path):
+    """
+    Reads an image.
+    Returns image as a list
+    """
+    logging.info("Loading image %s", image_path)
     data = np.array(Image.open(image_path), dtype="uint8")
 
     if len(data.shape) == 2:
@@ -14,10 +20,19 @@ def img2list(image_path):
     return data
 
 def data2img(data, outPath):
+    """
+    Writes data to outPath
+    """
+    logging.info("Writing image to %s", outPath)
     Image.fromarray(data.astype('uint8')).save(outPath)
 
 
 def rgb2hsi(data):
+    """
+    Converts array from rgb color space to hsi color space
+    Returns data in hsi format.
+    """
+    logging.info("Converting from rgb to hsi.")
     i = np.mean(data, axis=2)
 
     s = np.copy(i)
@@ -46,6 +61,11 @@ def rgb2hsi(data):
     return hsi
 
 def hsi2rgb(data):
+    """
+    Converts array from hsi color space to rgb color space.
+    Returns data in rgb format.
+    """
+    logging.info("Converting from hsi to rgb.")
     h,s,i = data[:,:,0], data[:,:,1], data[:,:,2]
     r,g,b = np.copy(h),np.copy(s),np.copy(i)
 
@@ -101,11 +121,16 @@ def hsi2rgb(data):
 
     return np.dstack((r,g,b))
 
-def denoise(data, kappa=0.1, iter=10):
-    h,w = data.shape[:2]
-    data_new = data.copy()
-    tmp = data.copy()
-    in_vars = ["data","data_new","tmp","kappa", "iter", "h", "w"]
+def denoise(channel, kappa=0.1, iter=10):
+    """
+    Runs a denoise algorithm on a given arary.
+    Returns denoised channel.
+    """
+    logging.info("Running denoise.")
+    h,w = channel.shape[:2]
+    channel_new = channel.copy()
+    tmp = channel.copy()
+    in_vars = ["channel","channel_new","tmp","kappa", "iter", "h", "w"]
     code=r"""
         for (int round=0; round<iter; round++)
         {
@@ -113,25 +138,27 @@ def denoise(data, kappa=0.1, iter=10):
             {
                 for (int j=1; j<w-1; j++)
                 {
-                    data_new(i,j) = data(i,j) + kappa*(data(i-1,j)
-                    +data(i,j-1) -4*data(i,j) +data(i,j+1)
-                    +data(i+1,j));
+                    channel_new(i,j) = channel(i,j) + kappa*(channel(i-1,j)
+                    +channel(i,j-1) -4*channel(i,j) +channel(i,j+1)
+                    +channel(i+1,j));
                 }
             }
-            tmp = data;
-            data = data_new;
-            data_new = tmp;
+            tmp = channel;
+            channel = channel_new;
+            channel_new = tmp;
         }
     """
 
     comp=weave.inline(code,
                       in_vars,
                       type_converters=weave.converters.blitz)
-    return data
+    return channel
 
 def adjust_channel(channel, channel_name, addend, max_value):
     """
-    Takes an arbitrary numpy array and adds addend to every element
+    Takes an arbitrary numpy array and adds addend to every element.
+    Addend can be a negative value.
+    Returns adjusted array.
     """
     addend = float(addend)
     if addend == 0:
@@ -143,7 +170,7 @@ def adjust_channel(channel, channel_name, addend, max_value):
         print "Your value was %d" % addend
         sys.exit(0)
 
-    #TODO comment on this is report
+    logging.info("Adjusting the %s channel by %d.", channel_name, addend)
     channel = channel + addend
     channel[channel > max_value] = max_value
     channel[channel < 0] = 0
@@ -151,6 +178,10 @@ def adjust_channel(channel, channel_name, addend, max_value):
     return channel
 
 def run(source, target, shouldDenoise, kappa, iterations, hue, saturation, intensity, red, green, blue):
+    """
+    Runs the program
+    """
+    logging.info("Starting program.")
     data = img2list(source)
     hsi = rgb2hsi(data)
 
@@ -208,9 +239,15 @@ if __name__=="__main__":
                         type=int, default=0)
 
     parser.add_argument("-t","--timeit", help="Prints execution time", action="store_true")
+    parser.add_argument("-v", "--verbose", help="Be verbose about what's going on.", action="store_true")
 
     args = parser.parse_args()
 
+
+    if args.verbose:
+        logging.basicConfig(format='> %(message)s', level=logging.INFO)
+    else:
+        logging.basicConfig(format='> %(message)s', level=logging.CRITICAL)
 
     run(args.source, args.target,
         args.denoise, args.kappa, args.iterations,
