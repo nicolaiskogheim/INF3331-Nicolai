@@ -18,6 +18,34 @@ def data2img(data, outPath):
     Image.fromarray(data.astype('uint8')).save(outPath)
 
 
+def rgb2hsi(data):
+    i = np.mean(data, axis=2)
+
+    s = np.copy(i)
+    m = i == 0
+    s[m] = 0
+    rgbMin = np.amin(data, axis=2)
+    s[~m] = 1 - rgbMin[~m]/i[~m]
+
+    #TODO This is slow. Refactor so numpy can optimize this
+    def hfunk(r,g,b):
+        r, g, b = float(r), float(g), float(b)
+        if r == g == b:
+            return 0
+        numerator= r - g/2 - b/2
+        denominator=np.sqrt(r**2 + g**2 + b**2 - r*g - r*b - g*b)
+        result = np.degrees(np.arccos(numerator/denominator))
+        if g >= b:
+            return result
+        else:
+            return 360 - result
+    hfunk = np.vectorize(hfunk)
+    r, g, b = data[:,:,0], data[:,:,1], data[:,:,2]
+    h = hfunk(r,g,b)
+    
+    hsi = np.dstack((h,s,i))
+    return hsi
+
 
 
 if __name__=="__main__":
