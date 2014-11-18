@@ -4,8 +4,8 @@ from PIL import Image
 from scipy import weave
 import sys
 
-def img2data(source):
-    data = np.array(Image.open(source), dtype="uint8")
+def img2data(image_path):
+    data = np.array(Image.open(image_path), dtype="uint8")
 
     if len(data.shape) == 2:
         print "The image you provided is black&white"
