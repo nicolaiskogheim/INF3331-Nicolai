@@ -130,7 +130,26 @@ def denoise(data, kappa=0.1, iter=10):
                       type_converters=weave.converters.blitz) 
     return data
 
+def adjust_channel(channel, channel_name, addend, max_value):
+    """
+    Takes an arbitrary numpy array and adds addend to every element
+    """
+    addend = float(addend)
+    if addend == 0:
+        return channel
+    
+    if np.absolute(addend) > max_value:
+        err_msg = "The {0} channel can be adjusted up or down by maximum {1}"
+        print err_msg.format(channel_name,max_value)
+        print "Your value was %d" % addend
+        sys.exit(0)
 
+    #TODO comment on this is report
+    channel = channel + addend
+    channel[channel > max_value] = max_value
+    channel[channel < 0] = 0
+
+    return channel
 
 if __name__=="__main__":
 
