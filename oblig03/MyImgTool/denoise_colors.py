@@ -47,7 +47,7 @@ if __name__=="__main__":
     parser.add_argument("-u","--hue", help="Adjust hue channel with positive or negative int",
                         type=int, default=0)
     parser.add_argument("-s","--saturation", help="Adjust saturation channel with positive or negative int",
-                        type=int, default=0)
+                        type=float, default=0.)
     parser.add_argument("-i","--intensity", help="Adjust intensity channel with positive or negative int",
                         type=int, default=0)
     parser.add_argument("-t","--timeit", help="Prints execution time", action="store_true")
