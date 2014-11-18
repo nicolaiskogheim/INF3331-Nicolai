@@ -2,8 +2,8 @@ import argparse
 import numpy as np
 from PIL import Image
 from scipy import weave
-import sys
 import logging
+
 
 def img2list(imgPath):
     """
@@ -55,9 +55,6 @@ def denoise(data,h,w, kappa=0.1, iter=10):
                       type_converters=weave.converters.blitz)
     return data
 
-def adjust_channel(*args, **kwargs):
-    print "You cannot adjust channels on black and white images"
-    sys.exit(0)
 
 def run(source, target, shouldDenoise, kappa, iterations):
     """
