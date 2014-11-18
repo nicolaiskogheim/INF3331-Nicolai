@@ -18,12 +18,7 @@ def data2img(data, outPath):
     Image.fromarray(data.astype('uint8')).save(outPath)
 
 
-def denoise(data, kappa, iter):
-    pass
-    # here we need hsi
 
-def rgb2hsi():
-    pass
 
 if __name__=="__main__":
 
@@ -55,14 +50,4 @@ if __name__=="__main__":
     args = parser.parse_args()
 
     data = img2data(args.source)
-    data = denoise(data, args.kappa, args.iterations)
-    data2img(data,args.target)
-    #data2img(data)
-    # rgb to hsi
-    #if denoise
-        #denoise
-    #alter hsi's
-    #hsi 2 rbg
-    #alter colors
-    # nup2img
 
