@@ -41,7 +41,7 @@ def rgb2hsi(data):
     hfunk = np.vectorize(hfunk)
     r, g, b = data[:,:,0], data[:,:,1], data[:,:,2]
     h = hfunk(r,g,b)
-    
+
     hsi = np.dstack((h,s,i))
     return hsi
 
@@ -73,7 +73,7 @@ def hsi2rgb(data):
     r[m], g[m], b[m] = \
             i[m]+i[m]*s[m]*(np.cos(np.radians(h[m]))/np.cos(np.radians(60 - h[m]))),\
             i[m]+i[m]*s[m]*(1-(np.cos(np.radians(h[m]))/np.cos(np.radians(60 - h[m])))),\
-            i[m]-i[m]*s[m] 
+            i[m]-i[m]*s[m]
 
     m = h == 120
     r[m], g[m], b[m] = \
@@ -93,7 +93,7 @@ def hsi2rgb(data):
             i[m] - i[m] * s[m],\
             i[m] + 2*i[m]*s[m]
 
-    m = (240 < h) & (h <= 360) 
+    m = (240 < h) & (h <= 360)
     r[m], g[m], b[m] = \
             i[m] + i[m]*s[m]*(1 - np.cos(np.radians(h[m] - 240))/np.cos(np.radians(300 - h[m]))),\
             i[m] - i[m]*s[m],\
@@ -123,10 +123,10 @@ def denoise(data, kappa=0.1, iter=10):
             data_new = tmp;
         }
     """
-   
+
     comp=weave.inline(code,
                       in_vars,
-                      type_converters=weave.converters.blitz) 
+                      type_converters=weave.converters.blitz)
     return data
 
 def adjust_channel(channel, channel_name, addend, max_value):
@@ -136,7 +136,7 @@ def adjust_channel(channel, channel_name, addend, max_value):
     addend = float(addend)
     if addend == 0:
         return channel
-    
+
     if np.absolute(addend) > max_value:
         err_msg = "The {0} channel can be adjusted up or down by maximum {1}"
         print err_msg.format(channel_name,max_value)
