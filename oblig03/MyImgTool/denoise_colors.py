@@ -4,7 +4,7 @@ from PIL import Image
 from scipy import weave
 import sys
 
-def img2data(image_path):
+def img2list(image_path):
     data = np.array(Image.open(image_path), dtype="uint8")
 
     if len(data.shape) == 2:
