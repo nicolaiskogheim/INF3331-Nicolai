@@ -16,7 +16,7 @@ def list2img(data,h,w,imgPath):
 
 def denoise(data,h,w, kappa=0.1, iter=10):
     for _ in xrange(0,iter):
-        for i in xrange(1, w-1): 
+        for i in xrange(1, w-1):
             for j in xrange(1, h-1):
                 data[j*w+i] += \
                               kappa*(data[(j-1)*w+i]
@@ -44,6 +44,6 @@ if __name__=="__main__":
     parser.add_argument("-i","--iter", default=10,
                         help="Times do do denoising")
 
-    args = parser.parse_args();
+    args = parser.parse_args()
 
     run(args.source, args.target)

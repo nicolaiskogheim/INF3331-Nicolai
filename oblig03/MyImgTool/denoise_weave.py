@@ -33,12 +33,11 @@ def denoise(data,h,w, kappa=0.1, iter=10):
             data_new = tmp;
         }
     """
-   
+
     comp=weave.inline(code,
                       in_vars,
-                      type_converters=weave.converters.blitz) 
+                      type_converters=weave.converters.blitz)
     return data
-
 
 
 def run(source, target, kappa, iter):
