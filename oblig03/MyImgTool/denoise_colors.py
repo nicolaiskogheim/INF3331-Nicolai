@@ -11,7 +11,6 @@ def img2data(image_path):
         print "The image you provided is black&white"
         print "Please use either denoise.py or denoise_weave.py for this."
         sys.exit(0)
-
     return data
 
 def data2img(data, outPath):
@@ -179,9 +178,11 @@ if __name__=="__main__":
                         type=float, default=0.)
     parser.add_argument("-i","--intensity", help="Adjust intensity channel with positive or negative int",
                         type=int, default=0)
+
     parser.add_argument("-t","--timeit", help="Prints execution time", action="store_true")
-    
+
     args = parser.parse_args()
+
 
     data = img2data(args.source)
     hsi = rgb2hsi(data)
