@@ -40,9 +40,9 @@ if __name__=="__main__":
                         type=int, default=10)
     parser.add_argument("-r","--red", help="Adjust red channel with positive or negative int",
                         type=int,default=0)
-    parser.add_argument("-b","--blue", help="Adjust blue channel with positive or negative int",
-                        type=int, default=0)
     parser.add_argument("-g","--green", help="Adjust green channel with positive or negative int",
+                        type=int, default=0)
+    parser.add_argument("-b","--blue", help="Adjust blue channel with positive or negative int",
                         type=int, default=0)
     parser.add_argument("-u","--hue", help="Adjust hue channel with positive or negative int",
                         type=int, default=0)
