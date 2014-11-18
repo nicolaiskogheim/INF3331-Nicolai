@@ -44,10 +44,11 @@ def adjust_channel(*args, **kwargs):
     print "You cannot adjust channels on black and white images"
     sys.exit(0)
 
-def run(source, target, kappa, iter):
+def run(source, target, shouldDenoise, kappa, iterations):
     imgList, h, w = img2list(source)
-    data = denoise(imgList,h,w,kappa,iter)
-    list2img(data,h,w,target)
+    if shouldDenoise:
+        imgList = denoise(imgList, h, w, kappa, iterations)
+    list2img(imgList, h, w, target)
 
 if __name__=="__main__":
 
@@ -63,4 +64,4 @@ if __name__=="__main__":
 
     args = parser.parse_args();
 
-    run(args.source, args.target, args.kappa, args.iter)
+    run(args.source, args.target, True, args.kappa, args.iter)
