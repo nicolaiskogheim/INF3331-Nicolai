@@ -32,18 +32,29 @@
 \begin{document}
 \maketitle
 
-\section{Oversikt}
+\tableofcontents
+
+\section*{Oversikt}
+\addcontentsline{toc}{section}{Oversikt}
 Programmene som brukes til bildeprossesering ligger i MyImgTool-mappen.
 Tester ligger i tests-mappen.
 I resources-mappen ligger filer hentet fra student-resources.
+\linebreak
 Denne filen, og tilhørende .tex, ligger i report-mappen,
 men kjøreeksempler i denne rapporten er alle ment å kjøres
 fra oblig03-mappen.
-For enkle kjøreeksempler kan anbefales det å ta en titt på README.md
+For enkle kjøreeksempler kan det anbefales å ta en titt på README.md
 i oblig03-mappen.
 
+Denne rapporten kan for øvrig genereres med følgende kommandoer.
+Obs. Må kjøres fra oblig03/report hvor denne filen ligger.
+%@exec
+> python ../../oblig02/PreTeX/prepro.py report.xtex report.tex
+> python ../../oblig02/PreTeX/compile.py ./report.tex
+%@
 
-\section{Oppgave 1 - Implementasjon i Python, Numpy og Weave}
+
+\section{Implementasjon i Python, Numpy og Weave}
 Hoveddelen i denne oppgaven var denoisingen.
 Dette er python-løsningen:
 
@@ -54,7 +65,7 @@ Og her er løsningen med weave:
 %@import ../MyImgTool/denoise_weave.py ( *def denoise(.|\n)*?return data)
 
 
-\section{Oppgave 2 - Bruk av profilering}
+\section{Bruk av profilering}
 Profilering av disse, i tilleg til fargeversjonen som nevnes senere, kan kjøres slik:
 %@exec
 > python MyImgTool/profiling.py
@@ -62,22 +73,64 @@ Profilering av disse, i tilleg til fargeversjonen som nevnes senere, kan kjøres
 
 Og resultatet vil se omtrent slik ut:
 
-%@exec python ../MyImgTool/profiling.py
+% Av en eller annen grunn ville ikke prepro gi tilbake output, så
+% da for vi gjøre det manuelt.
+%@exec
+> python MyImgTool/profiling.py
+
+Wed Nov 19 02:23:46 2014    python_timing
+Wed Nov 19 02:23:46 2014    weave_timing
+Wed Nov 19 02:23:48 2014    color_timing
+
+         191170 function calls (191084 primitive calls) in 3.728 seconds
+
+   Ordered by: cumulative time
+   List reduced from 302 to 20 due to restriction <20>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.002    0.002    2.148    2.148 denoise_colors.py:181(run)
+        1    0.021    0.021    1.833    1.833 denoise_colors.py:30(rgb2hsi)
+        1    0.095    0.095    1.782    1.782 function_base.py:1843(__call__)
+   187501    1.678    0.000    1.678    0.000 denoise_colors.py:45(hfunk)
+        3    0.000    0.000    1.531    0.510 <string>:1(<module>)
+        1    0.000    0.000    1.531    1.531 denoise.py:46(run)
+        1    1.476    1.476    1.476    1.476 denoise.py:28(denoise)
+        1    0.192    0.192    0.198    0.198 denoise_colors.py:64(hsi2rgb)
+        3    0.000    0.000    0.096    0.032 inline_tools.py:133(inline)
+        3    0.073    0.024    0.073    0.024 {apply}
+        2    0.000    0.000    0.071    0.036 denoise_colors.py:125(denoise)
+        2    0.000    0.000    0.068    0.034 inline_tools.py:361(attempt_function_call)
+        1    0.000    0.000    0.050    0.050 denoise_weave.py:59(run)
+        3    0.000    0.000    0.035    0.012 Image.py:1615(save)
+        1    0.000    0.000    0.029    0.029 denoise_weave.py:26(denoise)
+        1    0.000    0.000    0.028    0.028 denoise.py:19(list2img)
+       26    0.011    0.000    0.028    0.001 {numpy.core.multiarray.array}
+        3    0.000    0.000    0.027    0.009 JpegImagePlugin.py:566(_save)
+        3    0.000    0.000    0.027    0.009 ImageFile.py:449(_save)
+        1    0.005    0.005    0.027    0.027 denoise.py:8(img2list)
+%@
 
 
 For lettere å kunne sammenligne hastigheten på de tre programmene
 kan det være greit å greppe etter "run".
 
-%exec
-> pythong MyImgTool/profiling.py | grep run
+%@exec
+> python MyImgTool/profiling.py | grep run --color=always
 %@
 
-%@exec python ../MyImgTool/profiling.py | grep run
+%@exec
+python MyImgTool/profiling.py | grep run
+
+
+        1    0.002    0.002    2.107    2.107 denoise_colors.py:181(run)
+        1    0.000    0.000    1.530    1.530 denoise.py:46(run)
+        1    0.000    0.000    0.044    0.044 denoise_weave.py:59(run)
+%@
 
 Jeg har valgt å ikke bruke timeit-modulen da jeg ikke ser hva den
 kan gi meg som ikke cProfile kan.
 
-\section{Oppgave 3 - Utvidelse til farger}
+\section{Utvidelse til farger}
 Jeg må klare opp en ting helt først her. Jeg misforstod oppgaven.
 I stedet for å utvide weave-implementasjonen lagde jeg en egen
 versjon i en egen fil for dette.
@@ -112,10 +165,10 @@ s = np.copy(i)
   s[m] = 0
 %@
 
-\section{Oppgave 4 - Lineær manipulering - Utvidelse til fargerg}
+\section{Lineær manipulering}
 Her er det ikke så mye å si, annet enn at det kan være lurt
-å kjøre programmene med \-h flagget for å se hvordan du setter verdier.
-For eksempel brukes \-u for hue siden h-flagget var tatt for help.
+å kjøre programmene med h-flagget for å se hvordan du setter verdier.
+For eksempel brukes -u for hue siden h-flagget var tatt for help.
 De andre kanalene bruker flagg man ville ha gjettet, som r for rød, s for saturation osv.
 
 En kjøring kan gjøres direkte på denoise\_colors.py, eller gjennom
@@ -134,7 +187,7 @@ Your value was -10
 
 Legg til d-flagget for å kjøre denoise.
 
-\section{Oppgave 5 - Frontend}
+\section{Frontend}
 Alene støtter de tre implementasjonene alle flaggene med unntak av
 profilering, som jeg har valgt å legge i en egen fil (profiling.py).
 
@@ -147,8 +200,8 @@ Ved å kjøre frontend med h-flagget vil man få informasjon om alle muligheter.
 
 Jeg har valgt å se bort fra eps.
 
-\section{Oppgave 6 - Testing og dokumentasjon}
-Alle funksjoner er dokumenter.
+\section{Testing og dokumentasjon}
+Alle funksjoner er dokumentert.
 Når det kommer til tester har jeg dessverre ikke levert på det nivået som
 var forventet. Det er derimot lagt stor vekt på at alt av funksjonalitet
 skal være lett å teste.
@@ -158,14 +211,14 @@ Law of Demeter har, og vil alltid være, en viktig rettesnor i så måte.
 Testene kan kjøres med pytest, fra oblig03-mappa, på følgende måte:
 %@exec
 > py.test
-============================= test session starts ==============================
+========================== test session starts ==========================
 platform darwin -- Python 2.7.5 -- py-1.4.25 -- pytest-2.6.3
 plugins: cov
 collected 4 items
 
 tests/denoise_color_test.py ....
 
-=========================== 4 passed in 0.25 seconds ===========================
+======================== 4 passed in 0.25 seconds =======================
 %@
 
 Eller med nosetests om ønskelig:
@@ -177,5 +230,18 @@ Ran 4 tests in 0.157s
 
 OK
 %@
+
+Hva gjelder doctesting har vurdert det dithen at det ikke er noe av funksjonaliteten
+i programmet som er hensiktsmessig å teste på denne måten.
+
+\section*{Epilog}
+\addcontentsline{toc}{section}{Epilog}
+Det er mye som kunne vært skrevet om hvordan ting er gjort,
+men som vanlig stoler jeg på at programmet er oversiktlig nok
+til at leser uansett vil få mer utbytte av å gå rett til kilde(kode)n.
+Det vil alltid være mitt fremste mål at koden er så selvdokumenterende
+som det lar seg gjøre. Tester er en del av denne dokumentasjonen, så det
+var dumt at jeg ikke fikk til å gjøre den delen bedre.
+
 
 \end{document}
