@@ -69,9 +69,9 @@ def run(source, target, shouldDenoise, kappa, iterations):
 if __name__=="__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-s","--source", default="disasterbefore.jpg",
+    parser.add_argument("-f","--source", default="disasterbefore.jpg",
                         help="Path to source image")
-    parser.add_argument("-t","--target", help="Path to resulting image",
+    parser.add_argument("-o","--target", help="Path to resulting image",
                         default="disasterafter.weave.jpg")
     parser.add_argument("-k","--kappa", default=0.1,
                         help="Value between 0 and 1.", type=float)
