@@ -1,0 +1,181 @@
+\documentclass{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyvrb}
+\usepackage{framed}
+\usepackage{color}
+\providecommand{\shadedwbar}{}
+\definecolor{shadecolor}{rgb}{0.87843, 0.95686, 1.0}
+\renewenvironment{shadedwbar}{
+\def\FrameCommand{\color[rgb]{0.7,     0.95686, 1}\vrule width 1mm\normalcolor\colorbox{shadecolor}}\FrameRule0.6pt
+\MakeFramed {\advance\hsize-2mm\FrameRestore}\vskip3mm}{\vskip0mm\endMakeFramed}
+\providecommand{\shadedquoteBlueBar}{}
+\renewenvironment{shadedquoteBlueBar}[1][]{
+\bgroup\rmfamily
+\fboxsep=0mm\relax
+\begin{shadedwbar}
+\list{}{\parsep=-2mm\parskip=0mm\topsep=0pt\leftmargin=2mm
+\rightmargin=2\leftmargin\leftmargin=4pt\relax}
+\item\relax}
+{\endlist\end{shadedwbar}\egroup}
+
+\definecolor{codegray}{gray}{0.95}
+\newcommand{\code}[1]{\colorbox{codegray}{\texttt{#1}}}
+
+\newcommand{\bs}[1]{{\texttt{\textbackslash #1}}}
+
+\title{Obligatorisk innlevering 3 høsten 2014, INF3331}
+\author{Nicolai Skogheim <nicolai.skogheim@gmail.com>}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Oversikt}
+Programmene som brukes til bildeprossesering ligger i MyImgTool-mappen.
+Tester ligger i tests-mappen.
+I resources-mappen ligger filer hentet fra student-resources.
+Denne filen, og tilhørende .tex, ligger i report-mappen,
+men kjøreeksempler i denne rapporten er alle ment å kjøres
+fra oblig03-mappen.
+For enkle kjøreeksempler kan anbefales det å ta en titt på README.md
+i oblig03-mappen.
+
+
+\section{Oppgave 1 - Implementasjon i Python, Numpy og Weave}
+Hoveddelen i denne oppgaven var denoisingen.
+Dette er python-løsningen:
+
+%@import ../MyImgTool/denoise.py ( *def denoise(.|\n)*?return data)
+
+Og her er løsningen med weave:
+
+%@import ../MyImgTool/denoise_weave.py ( *def denoise(.|\n)*?return data)
+
+
+\section{Oppgave 2 - Bruk av profilering}
+Profilering av disse, i tilleg til fargeversjonen som nevnes senere, kan kjøres slik:
+%@exec
+> python MyImgTool/profiling.py
+%@
+
+Og resultatet vil se omtrent slik ut:
+
+%@exec python ../MyImgTool/profiling.py
+
+
+For lettere å kunne sammenligne hastigheten på de tre programmene
+kan det være greit å greppe etter "run".
+
+%exec
+> pythong MyImgTool/profiling.py | grep run
+%@
+
+%@exec python ../MyImgTool/profiling.py | grep run
+
+Jeg har valgt å ikke bruke timeit-modulen da jeg ikke ser hva den
+kan gi meg som ikke cProfile kan.
+
+\section{Oppgave 3 - Utvidelse til farger}
+Jeg må klare opp en ting helt først her. Jeg misforstod oppgaven.
+I stedet for å utvide weave-implementasjonen lagde jeg en egen
+versjon i en egen fil for dette.
+Som det kommer fram senere i dette dokumentet har ikke det hatt
+noe å si for sluttbrukeren om man bruker frontenden.
+
+I denne oppgaven har jeg brukt akkurat samme funksjonalitet som i
+weave-versjonen av svarthvitt denoising. Her kunne jeg faktisk
+ha importert funksjonen fra denoise\_weave.py.
+
+Når det kommer til konvertering mellom fargerom har jeg valgt å
+bruke numpy til noe den er veldig god på, nemlig å jobbe med
+store lister med data. Numpy gjør operasjonene i C og Fortran
+så det skal være vel så raskt.
+
+Før jeg går litt nærmere inn på koden vil jeg nevne en svakhet
+programmet har på nåværende tidspunkt.
+Utregningen av H i HSI gjøres ved å kjøre hvert element i rgb-listen
+gjennom en funksjon, som returnerer verdien for h.
+Dette er utrolig tregt, og er det eneste som gjør at dette programmet
+ikke kjører fortere enn denoising av svarthvitt i ren python.
+
+Det som stort sett foregår i konverteringsprosessen er at jeg lager
+en ny array ved å kopiere en som har riktig størrelse og form (her
+er det i(ntensity) som brukes som mal for s(aturation)).
+Så setter jeg et predikat, eller en maske som det heter i numpyverdenen,
+og ved å indeksere på masken kan jeg tilegne listen, her s, verdier
+for de elementene hvor predikatet stemmer.
+%@import
+s = np.copy(i)
+  m = i == 0
+  s[m] = 0
+%@
+
+\section{Oppgave 4 - Lineær manipulering - Utvidelse til fargerg}
+Her er det ikke så mye å si, annet enn at det kan være lurt
+å kjøre programmene med \-h flagget for å se hvordan du setter verdier.
+For eksempel brukes \-u for hue siden h-flagget var tatt for help.
+De andre kanalene bruker flagg man ville ha gjettet, som r for rød, s for saturation osv.
+
+En kjøring kan gjøres direkte på denoise\_colors.py, eller gjennom
+frontend som vist her:
+%@exec
+> python MyImgTool/frontend.py -r 30 -u -10
+%@
+
+Kjører man med feil verdier vil programmet avbryte.
+%@exec
+> python MyImgTool/frontend.py -r 30 -s -10
+
+The saturation channel can be adjusted up or down by maximum 1
+Your value was -10
+%@
+
+Legg til d-flagget for å kjøre denoise.
+
+\section{Oppgave 5 - Frontend}
+Alene støtter de tre implementasjonene alle flaggene med unntak av
+profilering, som jeg har valgt å legge i en egen fil (profiling.py).
+
+Gjennom frontenden derimot, er alt mulig i henhold til oppgaven.
+Som sagt så har jeg sett bort i fra timeit-modulen, men man kan
+fortsatt sende med et t-flagg. Da vil cProfile kjøre og man
+kan teste programmet med de parametere man ønsker.
+
+Ved å kjøre frontend med h-flagget vil man få informasjon om alle muligheter.
+
+Jeg har valgt å se bort fra eps.
+
+\section{Oppgave 6 - Testing og dokumentasjon}
+Alle funksjoner er dokumenter.
+Når det kommer til tester har jeg dessverre ikke levert på det nivået som
+var forventet. Det er derimot lagt stor vekt på at alt av funksjonalitet
+skal være lett å teste.
+Det lille jeg har av tester viser hvor lett det kan være.
+Law of Demeter har, og vil alltid være, en viktig rettesnor i så måte.
+
+Testene kan kjøres med pytest, fra oblig03-mappa, på følgende måte:
+%@exec
+> py.test
+============================= test session starts ==============================
+platform darwin -- Python 2.7.5 -- py-1.4.25 -- pytest-2.6.3
+plugins: cov
+collected 4 items
+
+tests/denoise_color_test.py ....
+
+=========================== 4 passed in 0.25 seconds ===========================
+%@
+
+Eller med nosetests om ønskelig:
+%@exec
+> nosetests
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.157s
+
+OK
+%@
+
+\end{document}
