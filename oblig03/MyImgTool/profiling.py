@@ -19,4 +19,4 @@ if __name__=="__main__":
 
     stats.strip_dirs()
     stats.sort_stats("cumulative")
-    stats.print_stats()
+    stats.print_stats(20)
