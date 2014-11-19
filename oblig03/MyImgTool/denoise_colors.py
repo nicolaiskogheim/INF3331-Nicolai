@@ -53,6 +53,7 @@ def rgb2hsi(data):
             return result
         else:
             return 360 - result
+
     hfunk = np.vectorize(hfunk)
     r, g, b = data[:,:,0], data[:,:,1], data[:,:,2]
     h = hfunk(r,g,b)
@@ -177,7 +178,7 @@ def adjust_channel(channel, channel_name, addend, max_value):
 
     return channel
 
-def run(source, target, shouldDenoise, kappa, iterations, hue, saturation, intensity, red, green, blue):
+def run(source, target, shouldDenoise, kappa, iterations, hue=0, saturation=0, intensity=0, red=0, green=0, blue=0):
     """
     Runs the program
     """
