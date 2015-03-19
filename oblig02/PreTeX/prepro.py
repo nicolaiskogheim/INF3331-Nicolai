@@ -417,8 +417,8 @@ if __name__=="__main__":
         sourcefolder = args.source.rsplit(path.sep,1)[0]
     else:
         sourcefolder = ""
-    notice = "% Warning: Editing this file directly can cause erratic behaviour in the compiler.\n"
 
+    notice = "% Warning: Editing this file directly can cause erratic behaviour in the compiler.\n"
     sourcefile = helper.load(args.source)
 
     if include_folder in args.destination:
