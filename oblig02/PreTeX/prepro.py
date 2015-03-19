@@ -332,13 +332,14 @@ class Scanner:
         self.capturing = False
         newfile = ""
         for i, line in enumerate(lines):
+            currentLine = i + 1 + startLine
             if self.capturing:
                 if line == self.handler.endToken:
                     self.capturing = False
                     self.handler.handle(self.release())
                     scanForNestedBlocks = Scanner().scan(self.handler.output(), token=token, startLine=i)
                     newfile += scanForNestedBlocks + "\n"
-                    line_number_map.addPair(i+1+startLine, len(newfile.split('\n')) + startLine)
+                    line_number_map.addPair(currentLine, len(newfile.split('\n')) + startLine)
 
                     continue
                 else:
@@ -349,7 +350,7 @@ class Scanner:
                 for handler in Handlers():
                     self.handler = handler()
                     if self.handler.wants(line):
-                        newfile += "% {0} from line {1}\n".format(handler.action,i+1+startLine)
+                        newfile += "% {0} from line {1}\n".format(handler.action, currentLine)
                         if self.handler.multiline:
                             self.capturing = True
                             self.capture(line)
@@ -362,7 +363,7 @@ class Scanner:
                     sys.exit(1)
             else:
                 newfile += line + "\n"
-                line_number_map.addPair(1+i+startLine,
+                line_number_map.addPair(currentLine,
                                         len(newfile.split('\n')) -1 + startLine)
 
 
